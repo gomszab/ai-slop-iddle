@@ -99,7 +99,7 @@ function renderHuntScene(){
   els.huntBiomeDesc.textContent=biome.desc;
   els.biomeLevelBadge.textContent=`Szint ${biomeData(biome.id).level}`;
   els.huntScene.style.setProperty('--biome-bg', biome.scene);
-  if(biome.image){ els.huntScene.style.setProperty('--biome-image', `url('${biome.image}')`); els.huntScene.classList.add('has-image'); }
+  if(biome.image){ els.huntScene.style.setProperty('--biome-image', `url('../${biome.image}')`); els.huntScene.classList.add('has-image'); }
   else { els.huntScene.style.removeProperty('--biome-image'); els.huntScene.classList.remove('has-image'); }
   const prog=biomeData(biome.id);
   prog.activeSpawns=prog.activeSpawns.filter(s=>s.expiresAt>now() && !s.caught);
