@@ -4,6 +4,16 @@ Ez a projekt manuálisan verziózott, mert a fejlesztés jelenleg chat-alapú it
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-07-26
+### Added
+- Statikus, generált háttérkép minden biomhoz (`assets/biome-*.jpg`), a korábbi CSS gradiens helyett (a gradiens overlay-ként megmaradt fallback + fényárnyék hatásnak).
+- Teknősök most enyhén ide-oda vándorolnak a vadászjeleneten (`wander` keyframe animáció), nem csak helyben lebegnek.
+- Reveal flow 10 másodperces "pörgős" animációra bővült: a Felfedés gombra kattintva 80ms-onként random faj/ritkaság pörög csillag-effekttel körülötte, majd 10s után jelenik meg a valódi fogás.
+
+### Changed
+- `renderHuntScene` most csak az újonnan megjelenő spawnokhoz hoz létre DOM elemet (nem törli/rajzolja újra az egészet minden hívásnál), hogy a wander-animáció ne szakadjon meg.
+- `revealPending()` / `renderReveal()` állapotgépe kibővült egy `spinning` fázissal a `revealed` előtt.
+
 ## [0.2.0] - 2026-07-26
 ### Changed
 - A korábban egyetlen `turtle-breeder.html` fájl szétbontva `index.html` + `css/style.css` + `js/*.js` struktúrába, jobb debugolhatóság érdekében.

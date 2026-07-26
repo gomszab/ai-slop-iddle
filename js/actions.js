@@ -20,19 +20,52 @@ function catchSpawn(spawnId,e){ const biomeId=state.selectedBiome; if(!biomeId){
   if(spawn.bigCatch) toast('Nagy fogás!', 'good'); else toast('Sikeres fogás!');
   floater(e.clientX,e.clientY,'+2 '+biomeById(biomeId).name+' token','good'); renderHuntScene(); renderHud(); renderCatchLog(); renderReveal(); save();
 }
+const REVEAL_SPIN_MS=10000;
+const REVEAL_TICK_MS=80;
+let revealSpinTimer=null;
+let revealSpinFrame=null;
+
+function stopRevealSpin(){
+  if(revealSpinTimer){ clearInterval(revealSpinTimer); revealSpinTimer=null; }
+  revealSpinFrame=null;
+}
+
 function revealPending(){
   const t=state.pendingReveal;
-  if(!t || t.revealed) return;
-  state.pendingReveal.revealed=true;
+  if(!t || t.revealed || t.spinning) return;
+  state.pendingReveal.spinning=true;
+  state.pendingReveal.spinStart=now();
+  revealSpinFrame={speciesId:t.speciesId,rarity:t.rarity};
   renderReveal();
-  save();
+  stopRevealSpin();
+  revealSpinTimer=setInterval(()=>{
+    const p=state.pendingReveal;
+    if(!p || !p.spinning){ stopRevealSpin(); return; }
+    const elapsed=now()-p.spinStart;
+    if(elapsed>=REVEAL_SPIN_MS){
+      stopRevealSpin();
+      p.spinning=false;
+      p.revealed=true;
+      renderReveal();
+      save();
+      return;
+    }
+    const pool=SPECIES.filter(sp=>true);
+    const randomSpecies=pool[Math.floor(Math.random()*pool.length)];
+    const randomRarity=RARITY_ORDER[Math.floor(Math.random()*RARITY_ORDER.length)];
+    revealSpinFrame={speciesId:randomSpecies.id,rarity:randomRarity};
+    renderRevealSpinFrame(elapsed);
+  }, REVEAL_TICK_MS);
 }
 function closeReveal(){
   const t=state.pendingReveal;
   if(!t) return;
   if(!t.revealed) return;
+  stopRevealSpin();
   const finalTurtle={...t};
   delete finalTurtle.revealed;
+  delete finalTurtle.spinning;
+  delete finalTurtle.spinStart;
   state.turtles.push(finalTurtle);
   addCatchLog(finalTurtle,false);
   state.pendingReveal=null;

@@ -27,11 +27,11 @@ const SPECIES=[
   {id:'holdteknos',name:'Holdteknős',emoji:'🐢',baseValue:560,eggPrice:1200,colors:['#dde4fa','#909bce']}
 ];
 const BIOMES=[
-  {id:'mohareti',name:'Moharét',desc:'Puha zöld liget, ahol békés kezdő teknősök bukkannak fel.',palette:['#dbe9c7','#93b07b'],scene:'linear-gradient(180deg,#d7ebc8 0%, #add2a0 45%, #8cb68a 100%)',species:['mohateknos'],unlockCost:0,map:{x:28,y:72}},
-  {id:'laguna',name:'Türkiz Lagúna',desc:'Párás vízpart, ahol a korábbi fajok mellé új vízkedvelő példányok érkeznek.',palette:['#c7edf0','#6bb8c2'],scene:'linear-gradient(180deg,#caeff3 0%, #8ed5da 46%, #6cb0a7 100%)',species:['mohateknos','lagunateknos'],unlockCost:20000,map:{x:57,y:52}},
-  {id:'naposdomb',name:'Napos Domb',desc:'Arany fényű tisztás ritkább napteknősökkel.',palette:['#f7e2b2','#d7b25b'],scene:'linear-gradient(180deg,#f3e4b8 0%, #d8c06a 48%, #af8b45 100%)',species:['mohateknos','lagunateknos','napteknos'],unlockCost:60000,map:{x:73,y:26}},
-  {id:'ambraerdő',name:'Ambraerdő',desc:'Meleg tónusú erdő, ahol nagyobb értékű fajok is megjelennek.',palette:['#f3ceb3','#d38754'],scene:'linear-gradient(180deg,#f4d4b9 0%, #dd9b73 45%, #916344 100%)',species:['mohateknos','lagunateknos','napteknos','ambrateknos','csillagteknos'],unlockCost:135000,map:{x:41,y:24}},
-  {id:'kristalyto',name:'Kristálytó',desc:'Kékesen fénylő végjáték biom különleges fajokkal.',palette:['#d7ecf6','#77bfd8'],scene:'linear-gradient(180deg,#d6eff5 0%, #85c5df 44%, #5d8fa0 100%)',species:['mohateknos','lagunateknos','napteknos','csillagteknos','kristalyteknos','vulkanteknos','holdteknos'],unlockCost:300000,map:{x:84,y:68}}
+  {id:'mohareti',name:'Moharét',desc:'Puha zöld liget, ahol békés kezdő teknősök bukkannak fel.',palette:['#dbe9c7','#93b07b'],scene:'linear-gradient(180deg,#d7ebc8 0%, #add2a0 45%, #8cb68a 100%)',image:'./assets/biome-mohareti.jpg',species:['mohateknos'],unlockCost:0,map:{x:28,y:72}},
+  {id:'laguna',name:'Türkiz Lagúna',desc:'Párás vízpart, ahol a korábbi fajok mellé új vízkedvelő példányok érkeznek.',palette:['#c7edf0','#6bb8c2'],scene:'linear-gradient(180deg,#caeff3 0%, #8ed5da 46%, #6cb0a7 100%)',image:'./assets/biome-laguna.jpg',species:['mohateknos','lagunateknos'],unlockCost:20000,map:{x:57,y:52}},
+  {id:'naposdomb',name:'Napos Domb',desc:'Arany fényű tisztás ritkább napteknősökkel.',palette:['#f7e2b2','#d7b25b'],scene:'linear-gradient(180deg,#f3e4b8 0%, #d8c06a 48%, #af8b45 100%)',image:'./assets/biome-naposdomb.jpg',species:['mohateknos','lagunateknos','napteknos'],unlockCost:60000,map:{x:73,y:26}},
+  {id:'ambraerdő',name:'Ambraerdő',desc:'Meleg tónusú erdő, ahol nagyobb értékű fajok is megjelennek.',palette:['#f3ceb3','#d38754'],scene:'linear-gradient(180deg,#f4d4b9 0%, #dd9b73 45%, #916344 100%)',image:'./assets/biome-ambra.jpg',species:['mohateknos','lagunateknos','napteknos','ambrateknos','csillagteknos'],unlockCost:135000,map:{x:41,y:24}},
+  {id:'kristalyto',name:'Kristálytó',desc:'Kékesen fénylő végjáték biom különleges fajokkal.',palette:['#d7ecf6','#77bfd8'],scene:'linear-gradient(180deg,#d6eff5 0%, #85c5df 44%, #5d8fa0 100%)',image:'./assets/biome-kristaly.jpg',species:['mohateknos','lagunateknos','napteknos','csillagteknos','kristalyteknos','vulkanteknos','holdteknos'],unlockCost:300000,map:{x:84,y:68}}
 ];
 const CONTEXT_HINTS={
   start:'Válassz biomot a vadászathoz.',

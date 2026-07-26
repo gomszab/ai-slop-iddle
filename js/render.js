@@ -99,14 +99,31 @@ function renderHuntScene(){
   els.huntBiomeDesc.textContent=biome.desc;
   els.biomeLevelBadge.textContent=`Szint ${biomeData(biome.id).level}`;
   els.huntScene.style.setProperty('--biome-bg', biome.scene);
+  if(biome.image){ els.huntScene.style.setProperty('--biome-image', `url('${biome.image}')`); els.huntScene.classList.add('has-image'); }
+  else { els.huntScene.style.removeProperty('--biome-image'); els.huntScene.classList.remove('has-image'); }
   const prog=biomeData(biome.id);
   prog.activeSpawns=prog.activeSpawns.filter(s=>s.expiresAt>now() && !s.caught);
-  els.huntScene.querySelectorAll('.catchable').forEach(n=>n.remove());
+  els.huntScene.querySelectorAll('.catchable').forEach(n=>{
+    if(!prog.activeSpawns.find(s=>s.id===n.dataset.spawnId)) n.remove();
+  });
   if(!state.selectedBiome){ els.sceneOverlay.classList.remove('hidden'); return; }
   els.sceneOverlay.classList.add('hidden');
   prog.activeSpawns.forEach(spawn=>{
-    const btn=document.createElement('button'); btn.className=`catchable ${spawn.bigCatch?'big-catch':''}`; btn.style.left=`${spawn.x}%`; btn.style.top=`${spawn.y}%`; btn.textContent='🐢';
-    btn.addEventListener('click',e=>catchSpawn(spawn.id,e)); els.huntScene.appendChild(btn);
+    let btn=els.huntScene.querySelector(`.catchable[data-spawn-id="${spawn.id}"]`);
+    if(!btn){
+      btn=document.createElement('button');
+      btn.className=`catchable ${spawn.bigCatch?'big-catch':''}`;
+      btn.dataset.spawnId=spawn.id;
+      btn.style.left=`${spawn.x}%`;
+      btn.style.top=`${spawn.y}%`;
+      btn.style.setProperty('--wander-x', `${(Math.random()*2-1)*34}px`);
+      btn.style.setProperty('--wander-y', `${(Math.random()*2-1)*22}px`);
+      btn.style.setProperty('--wander-dur', `${3.2+Math.random()*2.6}s`);
+      btn.style.setProperty('--wander-delay', `${Math.random()*-4}s`);
+      btn.textContent='🐢';
+      btn.addEventListener('click',e=>catchSpawn(spawn.id,e));
+      els.huntScene.appendChild(btn);
+    }
   });
 }
 function renderBiomeUpgrades(){
@@ -157,8 +174,19 @@ function renderReveal(){
     return;
   }
   els.revealPanel.classList.add('open');
+  if(pending.spinning){
+    els.mysteryState.classList.remove('hidden');
+    els.mysteryState.classList.add('spinning');
+    els.revealResult.className='reveal-result';
+    els.revealResult.innerHTML='';
+    els.revealBtn.classList.add('hidden');
+    els.revealCloseBtn.classList.add('hidden');
+    return;
+  }
   if(!pending.revealed){
     els.mysteryState.classList.remove('hidden');
+    els.mysteryState.classList.remove('spinning');
+    els.mysteryState.innerHTML='<div class="mystery">?</div><p class="muted">Rejtett jutalom</p>';
     els.revealResult.className='reveal-result';
     els.revealResult.innerHTML='';
     els.revealBtn.classList.remove('hidden');
@@ -168,9 +196,27 @@ function renderReveal(){
   const s=speciesById(pending.speciesId);
   const visual=turtleVisual(pending.speciesId,pending.rarity,pending.stage);
   els.mysteryState.classList.add('hidden');
+  els.mysteryState.classList.remove('spinning');
   els.revealResult.className='reveal-result show';
   els.revealResult.innerHTML=`<div class="reveal-turtle" style="--art-bg:linear-gradient(180deg, ${visual.bgA}, ${visual.bgB})"><span class="turtle-emoji" style="font-size:4rem;filter:hue-rotate(${speciesHue(pending.speciesId)}deg) saturate(1.45) brightness(1.02);">${visual.emoji}</span></div><h3>${s.name}</h3><div class="rarity-row"><span class="badge rarity-${pending.rarity}">${RARITIES[pending.rarity].label}</span><span class="badge stage">${STAGE_LABEL[pending.stage]}</span></div><p class="muted">Eladási érték: <strong>${fmt(turtleValue(pending))} pénz</strong></p>`;
   els.revealBtn.classList.add('hidden');
   els.revealCloseBtn.classList.remove('hidden');
+}
+function renderRevealSpinFrame(elapsedMs){
+  if(!els.mysteryState.classList.contains('spinning')) return;
+  const frame=revealSpinFrame;
+  if(!frame) return;
+  const visual=turtleVisual(frame.speciesId,frame.rarity,'young');
+  const remainingSec=Math.max(0,Math.ceil((REVEAL_SPIN_MS-elapsedMs)/1000));
+  els.mysteryState.innerHTML=`
+    <div class="spin-stage">
+      <div class="spin-stars">${'<span class="spin-star"></span>'.repeat(10)}</div>
+      <div class="spin-turtle" style="--art-bg:linear-gradient(180deg, ${visual.bgA}, ${visual.bgB})">
+        <span class="turtle-emoji" style="font-size:3.4rem;filter:hue-rotate(${speciesHue(frame.speciesId)}deg) saturate(1.45) brightness(1.02);">${visual.emoji}</span>
+      </div>
+      <span class="badge rarity-${frame.rarity} spin-rarity-badge">${RARITIES[frame.rarity].label}</span>
+    </div>
+    <p class="muted spin-countdown">Sorsolás… ${remainingSec}s</p>
+  `;
 }
 function rerender(){ renderHud(); renderTabs(); renderBoard(); renderCatchLog(); renderMap(); renderHuntScene(); renderBiomeUpgrades(); renderStoreSpecies(); renderGlobalStore(); renderBiomeUnlocks(); renderReveal(); els.contextHint.textContent=CONTEXT_HINTS[state.currentHint]||state.currentHint; save(); }
