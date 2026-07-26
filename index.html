@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="hu" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Teknős Tenyésztő</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3c-3.5 0-6 2.3-6 5.2 0 1 .3 1.9.8 2.5-1.7.6-2.8 2-2.8 3.8 0 2.5 2.5 4.5 5.8 4.5.7 0 1.4-.1 2-.3.6.2 1.3.3 2 .3 3.3 0 5.8-2 5.8-4.5 0-1.8-1.1-3.2-2.8-3.8.5-.6.8-1.5.8-2.5C18 5.3 15.5 3 12 3Z" fill="currentColor" opacity=".24"></path><circle cx="8.8" cy="8.5" r="1" fill="currentColor"></circle><circle cx="15.2" cy="8.5" r="1" fill="currentColor"></circle><path d="M6.5 15.2C7.5 17.1 9.5 18 12 18s4.5-.9 5.5-2.8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg>
+        </div>
+        <div>
+          <div>Teknős Tenyésztő</div>
+          <small class="muted">vadászat · board · store</small>
+        </div>
+      </div>
+      <div class="hud">
+        <div class="pill"><small>Pénz</small><b id="hudMoney">0</b></div>
+        <div class="pill"><small>Biom token</small><b id="hudTokens">0</b></div>
+        <div class="pill"><small>Tojások</small><b id="hudEggs">0</b></div>
+        <div class="pill"><small>Teknősök</small><b id="hudTurtles">0</b></div>
+        <div class="pill"><small>Ritkák</small><b id="hudRare">0</b></div>
+        <div class="pill"><small>Biom</small><b id="hudBiome">-</b></div>
+      </div>
+      <div class="top-actions">
+        <button class="theme-btn" id="themeBtn" aria-label="Téma váltása">◐</button>
+      </div>
+    </div>
+    <nav class="tabs" aria-label="Fő navigáció">
+      <button class="tab active" data-view="board">Board</button>
+      <button class="tab" data-view="hunt">Teknősvadászat</button>
+      <button class="tab" data-view="store">Store</button>
+    </nav>
+  </header>
+
+  <main class="main">
+    <section class="view active" id="view-board">
+      <div class="board-layout">
+        <aside class="panel" id="boardHelpPanel">
+          <h2>Játékmenet</h2>
+          <p class="muted">A korai loop: válassz biomot, vadássz teknőst, fedd fel, majd döntsd el, hogy eladod vagy tenyészted. A kontextuális tippek segítenek, de nem állítják meg a flow-t. [web:14][web:117]</p>
+          <div class="help-steps">
+            <div class="help-step"><div class="step-badge">1</div><div>Nyisd meg a <strong>Teknősvadászat</strong> tabot és válassz biomot.</div></div>
+            <div class="help-step"><div class="step-badge">2</div><div>Kattints a megjelenő teknősökre, majd használd a <strong>Felfedés</strong> gombot.</div></div>
+            <div class="help-step"><div class="step-badge">3</div><div>A boardon növeszd, tenyészd vagy add el a teknősöket.</div></div>
+            <div class="help-step"><div class="step-badge">4</div><div>A pénzből store unlockokat és új biomokat nyithatsz.</div></div>
+          </div>
+          <h3 style="margin-top:16px">Ritkaságok</h3>
+          <div class="legend">
+            <div class="legend-row"><span class="dot" style="background:#8ca291"></span>Common</div>
+            <div class="legend-row"><span class="dot" style="background:#5ba7c7"></span>Uncommon</div>
+            <div class="legend-row"><span class="dot" style="background:#8a63d2"></span>Rare</div>
+            <div class="legend-row"><span class="dot" style="background:#cf9c29"></span>Legendary</div>
+          </div>
+          <div class="hint" id="contextHint" style="margin-top:16px">Válassz biomot a vadászathoz.</div>
+        </aside>
+
+        <section class="panel">
+          <div class="board-header">
+            <div>
+              <h2>Board</h2>
+              <p class="muted">Itt jelennek meg a fogott és vásárolt tojások, valamint a teljes tenyésztőállomány.</p>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn secondary mobile-collapse-toggle" id="toggleBoardHelpBtn">Súgó</button>
+              <button class="btn secondary mobile-collapse-toggle" id="toggleQuickStoreBtn">Gyors store</button>
+              <button class="btn secondary" id="boardToHuntBtn">Irány a vadászat</button>
+            </div>
+          </div>
+          <div class="board-wrap">
+            <div class="board-mobile-actions mobile-board-shell">
+              <button class="btn secondary" id="mobileSellBtn">Kijelölt eladása</button>
+              <button class="btn" id="mobileBreedBtn">2 kijelölt párosítása</button>
+            </div>
+            <div style="display:grid;grid-template-columns:1.35fr .95fr;gap:16px" class="board-hero">
+              <div class="panel" style="padding:18px;border-radius:24px;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 14%, var(--surface)),color-mix(in srgb,var(--accent) 10%, var(--surface-2)));border:1px solid color-mix(in srgb,var(--text) 10%, transparent)">
+                <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+                  <div>
+                    <div style="font-family:var(--font-display);font-size:2rem;line-height:1">Tenyésztő kert</div>
+                    <p class="muted" style="margin-top:8px">A board mostantól puhább, játékosabb felületet kap: gyűjts, nevelj, párosíts és dönts arról, melyik teknős maradjon tenyésztésre.</p>
+                  </div>
+                  <div style="display:grid;grid-template-columns:repeat(2,minmax(110px,1fr));gap:10px;min-width:240px">
+                    <div class="store-egg-card"><strong>Fiatal eladás</strong><div class="muted">magasabb ár</div></div>
+                    <div class="store-egg-card"><strong>Felnőtt</strong><div class="muted">tenyésztéshez kell</div></div>
+                    <div class="store-egg-card"><strong>Tojás</strong><div class="muted">növeszd 3 kattintással</div></div>
+                    <div class="store-egg-card"><strong>Öreg</strong><div class="muted">olcsóbb, nem tenyészthet</div></div>
+                  </div>
+                </div>
+              </div>
+              <div class="panel" style="padding:18px;border-radius:24px;background:var(--surface-2)">
+                <strong>Aktív fókusz</strong>
+                <div class="muted" style="margin-top:8px">Vadászat után itt érdemes átnézni a ritkább példányokat, majd kijelölni eladáshoz vagy párosításhoz.</div>
+                <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+                  <span class="token">Board + Store együtt</span>
+                  <span class="token">Kényelmes mobil kijelölés</span>
+                </div>
+              </div>
+            </div>
+            <div class="inline-store" id="inlineStorePanel">
+              <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+                <div>
+                  <strong>Gyors store</strong>
+                  <div class="muted" style="font-size:.9rem">A Board mellett közvetlenül is tudsz tojást venni a már feloldott fajokból.</div>
+                </div>
+                <button class="btn ghost" id="openStoreBtn">Teljes Store megnyitása</button>
+              </div>
+              <div class="species-row" id="boardStoreSpecies"></div>
+            </div>
+            <div class="board-grid" id="boardGrid"></div>
+            <div class="dropzones desktop-board-actions">
+              <div class="dropzone breed" id="breedZone">
+                <strong>Párosítás</strong>
+                <span class="muted">Válassz ki két felnőtt teknőst egymás után mobilon vagy desktopon, hogy tojást hozz létre.</span>
+              </div>
+              <div class="dropzone sell" id="sellZone">
+                <strong>Eladás</strong>
+                <span class="muted">A fiatal teknősök érnek a legtöbbet, de a felnőttek kellenek a tenyésztéshez.</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="panel">
+          <h2>Fogási napló</h2>
+          <p class="muted">Csak a sikeres fogások kerülnek ide, az auto-hunt eredményei is. Az ismétlődő jutalom animációknál a skippelhetőség később fontos QoL-jutalom lehet. [web:105]</p>
+          <div class="log-list" id="catchLog"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-hunt">
+      <div class="hunt-layout">
+        <aside class="panel map-panel">
+          <div>
+            <h2>Biomtérkép</h2>
+            <p class="muted">A játék fokozatosan fedi fel az új biomokat, a még zároltak nem látszanak előre, hogy a felfedezés érzete megmaradjon. [web:119]</p>
+          </div>
+          <div class="map-card">
+            <div class="map-title"><strong>Fantasy térkép</strong><span class="token" id="biomeLevelBadge">Szint 1</span></div>
+            <div class="map-stage" id="mapStage"></div>
+          </div>
+          <button class="btn secondary" id="backToBoardFromHunt">Vissza a Boardra</button>
+        </aside>
+
+        <section class="hunt-scene">
+          <div class="panel scene-header">
+            <div>
+              <h2 id="huntBiomeTitle">Válassz biomot</h2>
+              <p class="muted" id="huntBiomeDesc">A vadászat a térképes kiválasztással kezdődik.</p>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="compact-btn" id="changeBiomeBtn">Biomváltás</button>
+              <button class="compact-btn" id="manualSpawnBtn">Teszt spawn</button>
+            </div>
+          </div>
+          <div class="scene" id="huntScene">
+            <div class="scene-ground"></div>
+            <div class="scene-overlay" id="sceneOverlay"><p>Válassz biomot a vadászat indításához.</p></div>
+          </div>
+        </section>
+
+        <aside class="panel">
+          <h2>Biom fejlesztések</h2>
+          <p class="muted">A biom tokenből lokális fejlesztéseket vehetsz: rövidebb spawn-idő, hosszabb láthatóság, több egyidejű teknős és külön auto-hunt. A pénz marad a fő korai szűk keresztmetszet. [web:114]</p>
+          <div class="upgrade-list" id="biomeUpgradeList"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view" id="view-store">
+      <div class="board-layout">
+        <aside class="panel">
+          <h2>Store áttekintés</h2>
+          <p class="muted">Itt oldhatsz fel store-ból vásárolható fajokat, konkrét tojásokat vehetsz, és globális kényelmi upgrade-eket is nyitsz, mint a reveal skip.</p>
+          <div class="hint">Az első store unlock ára 200 pénz. Az első új biom ára 20000. Az első auto-hunt ára 300.</div>
+        </aside>
+        <section class="panel">
+          <h2>Faj unlockok és tojások</h2>
+          <div class="store-list" id="storeSpeciesList"></div>
+        </section>
+        <aside class="panel">
+          <h2>Globális upgrade-ek</h2>
+          <div class="store-list" id="globalStoreList"></div>
+          <div style="height:16px"></div>
+          <h2>Biom unlockok</h2>
+          <div class="store-list" id="biomeUnlockList"></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div class="footer-note">Automatikus mentés localStorage-ba. Offline progress maximum 8 óra, csak az automatizált rendszerek számolódnak vissza.</div>
+</div>
+
+<div class="reveal-panel" id="revealPanel" aria-modal="true" role="dialog">
+  <div class="reveal-backdrop" id="revealBackdrop"></div>
+  <div class="reveal-card">
+    <div>
+      <h2 style="font-family:var(--font-display);font-size:2rem">Sikeres fogás</h2>
+      <p class="muted">Elkaptál valamit a biomban. Fedd fel, hogy mit találtál.</p>
+    </div>
+    <div class="reveal-shell">
+      <div id="mysteryState">
+        <div class="mystery">?</div>
+        <p class="muted">Rejtett jutalom</p>
+      </div>
+      <div class="reveal-result" id="revealResult"></div>
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+      <button class="btn gold" id="revealBtn">Felfedés</button>
+      <button class="btn secondary hidden" id="revealCloseBtn">Tovább</button>
+    </div>
+  </div>
+</div>
+
+<div class="offline-modal" id="offlineModal">
+  <div class="offline-card">
+    <h2 style="font-family:var(--font-display)">Üdv újra!</h2>
+    <p id="offlineText" class="muted"></p>
+    <button class="btn" id="offlineClose">Rendben</button>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+<div class="floaters" id="floaters"></div>
+
+<script src="./js/data.js"></script>
+<script src="./js/state.js"></script>
+<script src="./js/render.js"></script>
+<script src="./js/actions.js"></script>
+<script src="./js/main.js"></script>
+</body>
+</html>
