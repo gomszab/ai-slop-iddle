@@ -88,13 +88,12 @@ function renderMap(){
   if(current && current.image){ els.mapStage.style.setProperty('--map-image', `url('${current.image}')`); els.mapStage.classList.add('has-image'); }
   else { els.mapStage.style.removeProperty('--map-image'); els.mapStage.classList.remove('has-image'); }
   els.mapStage.innerHTML='';
-  BIOMES.forEach(biome=>{
-    const unlocked=state.unlockedBiomes.includes(biome.id);
+  BIOMES.filter(biome=>state.unlockedBiomes.includes(biome.id)).forEach(biome=>{
     const selected=state.selectedBiome===biome.id;
-    const node=document.createElement('div'); node.className=`map-node ${unlocked?'unlocked':''} ${selected?'selected':''}`; node.style.left=`${biome.map.x}%`; node.style.top=`${biome.map.y}%`;
-    const thumb=biome.image ? `<div class="node-thumb"><img src="${biome.image}" alt="${biome.name}" loading="lazy" width="72" height="72" /></div>` : `<div class="node-thumb"><span class="node-fallback">🐢</span></div>`;
-    node.innerHTML=`<button aria-label="${biome.name}">${thumb}<span>${biome.name}</span><small>${unlocked?'Nyitva':`$${fmt(biome.unlockCost)}`}</small></button>`;
-    node.querySelector('button').addEventListener('click',()=>{ if(unlocked) selectBiome(biome.id); });
+    const node=document.createElement('div'); node.className=`map-node unlocked ${selected?'selected':''}`; node.style.left=`${biome.map.x}%`; node.style.top=`${biome.map.y}%`;
+    const thumb=biome.image ? `<div class="node-thumb"><img src="${biome.image}" alt="${biome.name}" loading="lazy" width="92" height="92" /></div>` : `<div class="node-thumb"><span class="node-fallback">🐢</span></div>`;
+    node.innerHTML=`<button aria-label="${biome.name}">${thumb}<span>${biome.name}</span></button>`;
+    node.querySelector('button').addEventListener('click',()=>selectBiome(biome.id));
     els.mapStage.appendChild(node);
   });
 }
@@ -245,9 +244,10 @@ function renderRevealSpinFrame(elapsedMs){
   if(!frame) return;
   const visual=turtleVisual(frame.speciesId,frame.rarity,'young');
   const remainingSec=Math.max(0,Math.ceil((REVEAL_SPIN_MS-elapsedMs)/1000));
+  const isFinal=state.pendingReveal && state.pendingReveal.revealed;
   els.mysteryState.innerHTML=`
-    <div class="spin-stage">
-      <div class="spin-stars">${'<span class="spin-star"></span>'.repeat(10)}</div>
+    <div class="spin-stage ${isFinal?'final':''}">
+      <div class="spin-stars">${'<span class="spin-star"></span>'.repeat(12)}</div>
       <div class="spin-turtle" style="--art-bg:linear-gradient(180deg, ${visual.bgA}, ${visual.bgB})">
         <span class="turtle-emoji" style="font-size:3.4rem;filter:hue-rotate(${speciesHue(frame.speciesId)}deg) saturate(1.45) brightness(1.02);">${visual.emoji}</span>
       </div>
