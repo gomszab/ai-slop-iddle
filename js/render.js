@@ -84,11 +84,17 @@ function renderTabs(){
   Object.entries(els.views).forEach(([key,el])=>el.classList.toggle('active',key===state.currentView));
 }
 function renderMap(){
+  const current=activeBiome();
+  if(current && current.image){ els.mapStage.style.setProperty('--map-image', `url('${current.image}')`); els.mapStage.classList.add('has-image'); }
+  else { els.mapStage.style.removeProperty('--map-image'); els.mapStage.classList.remove('has-image'); }
   els.mapStage.innerHTML='';
-  state.unlockedBiomes.forEach(id=>{
-    const biome=biomeById(id); const node=document.createElement('div'); node.className='map-node'; node.style.left=`${biome.map.x}%`; node.style.top=`${biome.map.y}%`;
-    node.innerHTML=`<button style="--nodeA:${biome.palette[0]};--nodeB:${biome.palette[1]}" aria-label="${biome.name}"></button><span>${biome.name}</span>`;
-    node.querySelector('button').addEventListener('click',()=>selectBiome(id));
+  BIOMES.forEach(biome=>{
+    const unlocked=state.unlockedBiomes.includes(biome.id);
+    const selected=state.selectedBiome===biome.id;
+    const node=document.createElement('div'); node.className=`map-node ${unlocked?'unlocked':''} ${selected?'selected':''}`; node.style.left=`${biome.map.x}%`; node.style.top=`${biome.map.y}%`;
+    const thumb=biome.image ? `<div class="node-thumb"><img src="${biome.image}" alt="${biome.name}" loading="lazy" width="72" height="72" /></div>` : `<div class="node-thumb"><span class="node-fallback">🐢</span></div>`;
+    node.innerHTML=`<button aria-label="${biome.name}">${thumb}<span>${biome.name}</span><small>${unlocked?'Nyitva':`$${fmt(biome.unlockCost)}`}</small></button>`;
+    node.querySelector('button').addEventListener('click',()=>{ if(unlocked) selectBiome(biome.id); });
     els.mapStage.appendChild(node);
   });
 }
@@ -127,16 +133,25 @@ function renderHuntScene(){
   });
 }
 function renderBiomeUpgrades(){
-  const biome=activeBiome(); els.biomeUpgradeList.innerHTML='';
-  if(!biome){ els.biomeUpgradeList.innerHTML='<div class="upgrade-card muted">Előbb válassz biomot.</div>'; return; }
+  const biome=activeBiome();
+  const list=els.biomeUpgradeList; list.innerHTML='';
+  if(!biome){ list.innerHTML='<div class="upgrade-card muted">Előbb válassz biomot.</div>'; return; }
   const prog=biomeData(biome.id);
-  biomeUpgradeDefs(biome.id).forEach(def=>{
-    const lvl=prog.upgrades[def.id]||0; const maxed=lvl>=def.max; const cost=def.base + def.step*lvl; const enough=def.type==='token'?biomeTokenCount(biome.id)>=cost:state.money>=cost;
-    const card=document.createElement('div'); card.className='upgrade-card';
-    card.innerHTML=`<strong>${def.title}</strong><div class="muted">${def.desc}</div><div class="price-line"><span>${def.id==='autoHuntUnlock'&&lvl? 'Aktív' : 'Szint '+lvl+(maxed?' · max':'')}</span><button class="btn ${def.type==='token'?'secondary':''}" ${maxed||!enough?'disabled':''}>${maxed?'Max':cost+' '+(def.type==='token'? biome.name+' token':'pénz')}</button></div><div class="muted" style="margin-top:6px;font-size:.82rem">Elérhető: ${fmt(biomeTokenCount(biome.id))} ${biome.name.toLowerCase()} token</div>`;
-    card.querySelector('button').addEventListener('click',()=>buyBiomeUpgrade(biome.id,def));
-    els.biomeUpgradeList.appendChild(card);
-  });
+  const card=document.createElement('div'); card.className='biome-card';
+  card.innerHTML=`
+    <div class="biome-hero"><img src="${biome.image || ''}" alt="${biome.name}" loading="lazy" width="640" height="360"></div>
+    <div><h3>${biome.name} fejlesztések</h3><p>${biome.desc}</p></div>
+    <div class="biome-meta-grid">
+      <div class="store-card"><div class="muted">Biom szint</div><strong>${prog.level}</strong></div>
+      <div class="store-card"><div class="muted">Tokenek</div><strong>${biomeTokenCount(biome.id)}</strong></div>
+    </div>
+    <div class="biome-upgrades">${biomeUpgradeDefs(biome.id).map(def=>{
+      const lvl=prog.upgrades[def.id]||0; const maxed=lvl>=def.max; const cost=def.base + def.step*lvl; const enough=def.type==='token'?biomeTokenCount(biome.id)>=cost:state.money>=cost;
+      return `<div class="store-card"><strong>${def.title}</strong><div class="muted">${def.desc}</div><div class="price-line"><span>Szint ${lvl}/${def.max}</span><button class="btn ${def.type==='token'?'secondary':''}" ${maxed||!enough?'disabled':''}>${maxed?'Max':cost+' '+(def.type==='token'? biome.name+' token':'pénz')}</button></div></div>`;
+    }).join('')}</div>
+  `;
+  card.querySelectorAll('button').forEach((btn,i)=>btn.addEventListener('click',()=>buyBiomeUpgrade(biome.id, biomeUpgradeDefs(biome.id)[i])));
+  list.appendChild(card);
 }
 function renderStoreSpecies(){
   const list=els.storeSpeciesList; list.innerHTML='';
@@ -159,13 +174,35 @@ function renderGlobalStore(){
 }
 function renderBiomeUnlocks(){
   const list=els.biomeUnlockList; list.innerHTML='';
-  BIOMES.filter(b=>!state.unlockedBiomes.includes(b.id)).slice(0,1).forEach(b=>{
+  const active=activeBiome();
+  if(active){
+    const prog=biomeData(active.id);
+    const card=document.createElement('div'); card.className='biome-card';
+    card.innerHTML=`
+      <div class="biome-hero"><img src="${active.image || ''}" alt="${active.name}" loading="lazy" width="640" height="360"></div>
+      <div><h3>${active.name}</h3><p>${active.desc}</p></div>
+      <div class="biome-meta-grid">
+        <div class="store-card"><div class="muted">Biom szint</div><strong>${prog.level}</strong></div>
+        <div class="store-card"><div class="muted">Nyitott fajok</div><strong>${active.species.length}</strong></div>
+      </div>
+      <div class="store-card"><div class="muted">Biom tulajdonságok</div><div class="badge-row">${[
+        `<span class="badge">Spawn ${prog.upgrades.spawnRate||0}</span>`,
+        `<span class="badge">Láthatóság ${prog.upgrades.visibleTime||0}</span>`,
+        `<span class="badge">Egyidejű ${prog.upgrades.simultaneous||0}</span>`,
+        `<span class="badge">Ritka esély ${prog.upgrades.rareChance||0}</span>`
+      ].join('')}</div></div>
+    `;
+    list.appendChild(card);
+  }
+  const unlocks=document.createElement('div'); unlocks.className='biome-unlocks-grid';
+  BIOMES.filter(b=>!state.unlockedBiomes.includes(b.id)).forEach(b=>{
     const card=document.createElement('div'); card.className='store-card';
     card.innerHTML=`<strong>${b.name}</strong><div class="muted">${b.desc}</div><div class="price-line"><span class="token">${fmt(b.unlockCost)} pénz</span><button class="btn" ${state.money<b.unlockCost?'disabled':''}>Biom feloldása</button></div>`;
     card.querySelector('button').addEventListener('click',()=>unlockBiome(b.id));
-    list.appendChild(card);
+    unlocks.appendChild(card);
   });
-  if(!list.children.length) list.innerHTML='<div class="store-card muted">Minden jelenlegi biom fel van oldva.</div>';
+  list.appendChild(unlocks);
+  if(!BIOMES.filter(b=>!state.unlockedBiomes.includes(b.id)).length && !active) list.innerHTML='<div class="store-card muted">Minden jelenlegi biom fel van oldva.</div>';
 }
 function renderReveal(){
   const pending=state.pendingReveal;
