@@ -1,183 +1,183 @@
 // render.js — minden DOM-ba író / kirajzoló függvény (renderX). Nincs benne mutáció, csak megjelenítés.
 
-function renderHud(){
-  els.hudMoney.textContent=fmt(state.money);
-  els.hudTokens.textContent=fmt(totalBiomeTokens());
-  els.hudEggs.textContent=state.turtles.filter(t=>t.stage==='egg').length;
-  els.hudTurtles.textContent=state.turtles.filter(t=>t.stage!=='egg').length;
-  els.hudRare.textContent=state.turtles.filter(t=>['rare','legendary'].includes(t.rarity)).length;
-  els.hudBiome.textContent=activeBiome()?.name||'-';
+function renderHud() {
+  els.hudMoney.textContent = fmt(state.money);
+  els.hudTokens.textContent = fmt(totalBiomeTokens());
+  els.hudEggs.textContent = state.turtles.filter(t => t.stage === 'egg').length;
+  els.hudTurtles.textContent = state.turtles.filter(t => t.stage !== 'egg').length;
+  els.hudRare.textContent = state.turtles.filter(t => ['rare', 'legendary'].includes(t.rarity)).length;
+  els.hudBiome.textContent = activeBiome()?.name || '-';
 }
-function rarityBadge(r){ return `<span class="badge" style="background:${RARITIES[r].color};color:${r==='legendary'?'#3f2d00':'#fff'}">${RARITIES[r].label}</span>`; }
-function speciesHue(speciesId){ const hueMap={mohateknos:92,lagunateknos:170,napteknos:28,ambrateknos:345,csillagteknos:245,kristalyteknos:190,vulkanteknos:320,holdteknos:215}; return hueMap[speciesId] ?? 100; }
-function turtleVisual(speciesId, rarity='common', stage='young'){ const rarityBg={common:['#edf6ec','#d6ead3'],uncommon:['#e6f6f8','#cbe9ef'],rare:['#efe9fb','#d9cff6'],legendary:['#fff5d9','#f6df9d']}; const speciesMap={mohateknos:['#4f8f53','#2f6b35'],lagunateknos:['#46a8bf','#207086'],napteknos:['#d8ad38','#9a7015'],ambrateknos:['#d56c43','#96361f'],csillagteknos:['#8f77df','#5a42aa'],kristalyteknos:['#7bc7da','#3f8fa4'],vulkanteknos:['#c95d47','#7f291d'],holdteknos:['#8d9bc7','#58648d']}; const colors=speciesMap[speciesId]||['#5a9960','#366b3e']; const bg=rarityBg[rarity]||rarityBg.common; const emoji = stage==='egg' ? '🥚' : '🐢'; return {emoji,tintA:colors[0],tintB:colors[1],bgA:bg[0],bgB:bg[1]}; }
-function renderBoardStore(){
-  const unlocked=state.storeUnlockedSpecies;
-  els.boardStoreSpecies.innerHTML='';
-  if(!unlocked.length){
-    const box=document.createElement('div'); box.className='store-egg-card'; box.innerHTML='<strong>Még nincs store faj feloldva</strong><div class="muted">Szerezz 200 pénzt az első faj unlockhoz.</div>'; els.boardStoreSpecies.appendChild(box); return;
+function rarityBadge(r) { return `<span class="badge" style="background:${RARITIES[r].color};color:${r === 'legendary' ? '#3f2d00' : '#fff'}">${RARITIES[r].label}</span>`; }
+function speciesHue(speciesId) { const hueMap = { mohateknos: 92, lagunateknos: 170, napteknos: 28, ambrateknos: 345, csillagteknos: 245, kristalyteknos: 190, vulkanteknos: 320, holdteknos: 215 }; return hueMap[speciesId] ?? 100; }
+function turtleVisual(speciesId, rarity = 'common', stage = 'young') { const rarityBg = { common: ['#edf6ec', '#d6ead3'], uncommon: ['#e6f6f8', '#cbe9ef'], rare: ['#efe9fb', '#d9cff6'], legendary: ['#fff5d9', '#f6df9d'] }; const speciesMap = { mohateknos: ['#4f8f53', '#2f6b35'], lagunateknos: ['#46a8bf', '#207086'], napteknos: ['#d8ad38', '#9a7015'], ambrateknos: ['#d56c43', '#96361f'], csillagteknos: ['#8f77df', '#5a42aa'], kristalyteknos: ['#7bc7da', '#3f8fa4'], vulkanteknos: ['#c95d47', '#7f291d'], holdteknos: ['#8d9bc7', '#58648d'] }; const colors = speciesMap[speciesId] || ['#5a9960', '#366b3e']; const bg = rarityBg[rarity] || rarityBg.common; const emoji = stage === 'egg' ? '🥚' : '🐢'; return { emoji, tintA: colors[0], tintB: colors[1], bgA: bg[0], bgB: bg[1] }; }
+function renderBoardStore() {
+  const unlocked = state.storeUnlockedSpecies;
+  els.boardStoreSpecies.innerHTML = '';
+  if (!unlocked.length) {
+    const box = document.createElement('div'); box.className = 'store-egg-card'; box.innerHTML = '<strong>Még nincs store faj feloldva</strong><div class="muted">Szerezz 200 pénzt az első faj unlockhoz.</div>'; els.boardStoreSpecies.appendChild(box); return;
   }
-  unlocked.forEach(id=>{
-    const s=speciesById(id);
-    const card=document.createElement('div'); card.className='store-egg-card';
-    card.innerHTML=`<div style="display:flex;justify-content:space-between;gap:8px"><strong>${s.name}</strong><span>${s.emoji}</span></div><div class="muted">Tojásként kerül a boardra.</div><div class="price-line"><span class="token">${fmt(s.eggPrice)} pénz</span><button class="btn" ${state.money<s.eggPrice?'disabled':''}>Vásárlás</button></div>`;
-    card.querySelector('button').addEventListener('click',()=>buyEgg(id));
+  unlocked.forEach(id => {
+    const s = speciesById(id);
+    const card = document.createElement('div'); card.className = 'store-egg-card';
+    card.innerHTML = `<div style="display:flex;justify-content:space-between;gap:8px"><strong>${s.name}</strong><span>${s.emoji}</span></div><div class="muted">Tojásként kerül a boardra.</div><div class="price-line"><span class="token">${fmt(s.eggPrice)} pénz</span><button class="btn" ${state.money < s.eggPrice ? 'disabled' : ''}>Vásárlás</button></div>`;
+    card.querySelector('button').addEventListener('click', () => buyEgg(id));
     els.boardStoreSpecies.appendChild(card);
   });
 }
-function renderBoard(){
+function renderBoard() {
   renderBoardStore();
-  els.boardGrid.innerHTML='';
-  if(!state.turtles.length){
-    els.boardGrid.innerHTML='<div class="empty-state"><div><h3 style="font-family:var(--font-display);font-size:2rem">Üres a board</h3><p class="muted">Az első teknősöket vadászattal vagy később store tojásokkal szerzed meg.</p></div></div>';
+  els.boardGrid.innerHTML = '';
+  if (!state.turtles.length) {
+    els.boardGrid.innerHTML = '<div class="empty-state"><div><h3 style="font-family:var(--font-display);font-size:2rem">Üres a board</h3><p class="muted">Az első teknősöket vadászattal vagy később store tojásokkal szerzed meg.</p></div></div>';
     return;
   }
-  state.turtles.forEach(t=>{
-    const s=speciesById(t.speciesId); const clicksNeeded=stageClicksNeeded(t.stage); const pct=Math.min(100,(t.progress/clicksNeeded)*100); const sellValue=turtleValue(t); const selected=state.selectedTurtles.includes(t.uid);
-    const card=document.createElement('article'); card.className=`card ${selected?'selected':''}`;
-    const visual=turtleVisual(t.speciesId,t.rarity,t.stage);
-    const selectLabel=selected?'Kijelölve':'Kijelölés';
-    card.innerHTML=`
+  state.turtles.forEach(t => {
+    const s = speciesById(t.speciesId); const clicksNeeded = stageClicksNeeded(t.stage); const pct = Math.min(100, (t.progress / clicksNeeded) * 100); const sellValue = turtleValue(t); const selected = state.selectedTurtles.includes(t.uid);
+    const card = document.createElement('article'); card.className = `card ${selected ? 'selected' : ''}`;
+    const visual = turtleVisual(t.speciesId, t.rarity, t.stage);
+    const selectLabel = selected ? 'Kijelölve' : 'Kijelölés';
+    card.innerHTML = `
       <div class="card-top">
-        <div class="meta"><div class="name">${s.name}</div><div class="sub">${t.source==='hunt'?'Vadászott':t.source==='store'?'Store tojás':'Tenyésztett'}</div></div>
+        <div class="meta"><div class="name">${s.name}</div><div class="sub">${t.source === 'hunt' ? 'Vadászott' : t.source === 'store' ? 'Store tojás' : 'Tenyésztett'}</div></div>
         ${rarityBadge(t.rarity)}
       </div>
       <div class="turtle-art" style="--art-sky:${visual.bgA};--art-ground:${visual.bgB}"><div class="turtle-glyph"><span class="turtle-emoji" style="filter:hue-rotate(${speciesHue(t.speciesId)}deg) saturate(1.45) brightness(1.02);">${visual.emoji}</span></div></div>
-      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span class="badge stage">${STAGE_LABEL[t.stage]}</span><strong>${sellValue>0?fmt(sellValue)+' pénz':'nem eladható'}</strong></div>
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><span class="badge stage">${STAGE_LABEL[t.stage]}</span><strong>${sellValue > 0 ? fmt(sellValue) + ' pénz' : 'nem eladható'}</strong></div>
       <div class="progress"><div class="bar" style="width:${pct}%"></div></div>
       <div class="card-icon-actions">
         <button class="icon-btn primary" data-action="grow" aria-label="Növesztés" title="Növesztés"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg></button>
         <button class="icon-btn" data-action="select" aria-label="${selectLabel}" title="${selectLabel}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg></button>
-        <button class="icon-btn" data-action="sell" aria-label="Eladás" title="Eladás" ${sellValue<=0?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></button>
-        <button class="icon-btn" data-action="breed" aria-label="Párosítás" title="Párosítás" ${t.stage!=='adult'?'disabled':''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6.5-4.3-9-8.3C1 9 2.7 5.5 6.4 5.5c2 0 3 .9 4 2.1 1-1.2 2-2.1 4-2.1 3.7 0 5.4 3.5 3.4 7.2-2.5 4-9 8.3-9 8.3Z"/></svg></button>
+        <button class="icon-btn" data-action="sell" aria-label="Eladás" title="Eladás" ${sellValue <= 0 ? 'disabled' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></button>
+        <button class="icon-btn" data-action="breed" aria-label="Párosítás" title="Párosítás" ${t.stage !== 'adult' ? 'disabled' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6.5-4.3-9-8.3C1 9 2.7 5.5 6.4 5.5c2 0 3 .9 4 2.1 1-1.2 2-2.1 4-2.1 3.7 0 5.4 3.5 3.4 7.2-2.5 4-9 8.3-9 8.3Z"/></svg></button>
       </div>
       <div class="card-actions">
-        <button class="small-btn primary" data-action="grow">${t.stage==='old'?'Pihen':'Növesztés'}</button>
+        <button class="small-btn primary" data-action="grow">${t.stage === 'old' ? 'Pihen' : 'Növesztés'}</button>
         <button class="small-btn" data-action="select">${selectLabel}</button>
-        <button class="small-btn" data-action="sell" ${sellValue<=0?'disabled':''}>Eladás</button>
-        <button class="small-btn" data-action="breed" ${t.stage!=='adult'?'disabled':''}>Párosítás</button>
+        <button class="small-btn" data-action="sell" ${sellValue <= 0 ? 'disabled' : ''}>Eladás</button>
+        <button class="small-btn" data-action="breed" ${t.stage !== 'adult' ? 'disabled' : ''}>Párosítás</button>
       </div>
       <div class="stats-list">
-        <div>Következő: ${t.stage==='old'?'nincs':STAGE_LABEL[stageNext(t.stage)]}</div>
-        <div>Szaporítás: ${t.stage==='adult'?`${t.breedCount}/${BREED_LIMIT}`:'-'}</div>
-        <div>Cooldown: ${t.cooldownUntil>now()?`${Math.ceil((t.cooldownUntil-now())/1000)} mp`:'kész'}</div>
+        <div>Következő: ${t.stage === 'old' ? 'nincs' : STAGE_LABEL[stageNext(t.stage)]}</div>
+        <div>Szaporítás: ${t.stage === 'adult' ? `${t.breedCount}/${BREED_LIMIT}` : '-'}</div>
+        <div>Cooldown: ${t.cooldownUntil > now() ? `${Math.ceil((t.cooldownUntil - now()) / 1000)} mp` : 'kész'}</div>
       </div>`;
-    card.querySelector('[data-action="grow"]').addEventListener('click',()=>growTurtle(t.uid));
-    card.querySelector('[data-action="select"]').addEventListener('click',()=>toggleSelect(t.uid));
-    card.querySelector('[data-action="sell"]').addEventListener('click',e=>sellTurtle(t.uid,e));
-    card.querySelector('[data-action="breed"]').addEventListener('click',()=>toggleSelect(t.uid,true));
+    card.querySelector('[data-action="grow"]').addEventListener('click', () => growTurtle(t.uid));
+    card.querySelector('[data-action="select"]').addEventListener('click', () => toggleSelect(t.uid));
+    card.querySelector('[data-action="sell"]').addEventListener('click', e => sellTurtle(t.uid, e));
+    card.querySelector('[data-action="breed"]').addEventListener('click', () => toggleSelect(t.uid, true));
     els.boardGrid.appendChild(card);
   });
 }
-function renderCatchLog(){
-  els.catchLog.innerHTML='';
-  if(!state.catchLog.length){ els.catchLog.innerHTML='<div class="log-item muted">Még nincs sikeres fogás.</div>'; return; }
-  state.catchLog.slice(0,10).forEach(entry=>{
-    const el=document.createElement('div'); el.className='log-item';
-    const biomeLabel = entry.biomeId ? ' · '+biomeById(entry.biomeId).name : '';
-    el.innerHTML=`<strong>${entry.speciesName}</strong><div class="muted">${entry.rarityLabel} · ${entry.stageLabel} · ${entry.value} pénz${biomeLabel} ${entry.auto?'· auto':''}</div>`;
+function renderCatchLog() {
+  els.catchLog.innerHTML = '';
+  if (!state.catchLog.length) { els.catchLog.innerHTML = '<div class="log-item muted">Még nincs sikeres fogás.</div>'; return; }
+  state.catchLog.slice(0, 10).forEach(entry => {
+    const el = document.createElement('div'); el.className = 'log-item';
+    const biomeLabel = entry.biomeId ? ' · ' + biomeById(entry.biomeId).name : '';
+    el.innerHTML = `<strong>${entry.speciesName}</strong><div class="muted">${entry.rarityLabel} · ${entry.stageLabel} · ${entry.value} pénz${biomeLabel} ${entry.auto ? '· auto' : ''}</div>`;
     els.catchLog.appendChild(el);
   });
 }
-function renderTabs(){
-  els.tabs.forEach(t=>t.classList.toggle('active',t.dataset.view===state.currentView));
-  Object.entries(els.views).forEach(([key,el])=>el.classList.toggle('active',key===state.currentView));
+function renderTabs() {
+  els.tabs.forEach(t => t.classList.toggle('active', t.dataset.view === state.currentView));
+  Object.entries(els.views).forEach(([key, el]) => el.classList.toggle('active', key === state.currentView));
 }
-function renderMap(){
-  const current=activeBiome();
-  if(current && current.image){ els.mapStage.style.setProperty('--map-image', `url('${current.image}')`); els.mapStage.classList.add('has-image'); }
+function renderMap() {
+  const current = activeBiome();
+  if (current && current.image) { els.mapStage.style.setProperty('--map-image', `url('${current.image}')`); els.mapStage.classList.add('has-image'); }
   else { els.mapStage.style.removeProperty('--map-image'); els.mapStage.classList.remove('has-image'); }
-  els.mapStage.innerHTML='';
-  BIOMES.filter(biome=>state.unlockedBiomes.includes(biome.id)).forEach(biome=>{
-    const selected=state.selectedBiome===biome.id;
-    const node=document.createElement('div'); node.className=`map-node unlocked ${selected?'selected':''}`; node.style.left=`${biome.map.x}%`; node.style.top=`${biome.map.y}%`;
-    const thumb=biome.image ? `<div class="node-thumb"><img src="${biome.image}" alt="${biome.name}" loading="lazy" width="92" height="92" /></div>` : `<div class="node-thumb"><span class="node-fallback">🐢</span></div>`;
-    node.innerHTML=`<button aria-label="${biome.name}">${thumb}<span>${biome.name}</span></button>`;
-    node.querySelector('button').addEventListener('click',()=>selectBiome(biome.id));
+  els.mapStage.innerHTML = '';
+  BIOMES.filter(biome => state.unlockedBiomes.includes(biome.id)).forEach(biome => {
+    const selected = state.selectedBiome === biome.id;
+    const node = document.createElement('div'); node.className = `map-node unlocked ${selected ? 'selected' : ''}`; node.style.left = `${biome.map.x}%`; node.style.top = `${biome.map.y}%`;
+    const thumb = biome.image ? `<div class="node-thumb"><img src="${biome.image}" alt="${biome.name}" loading="lazy" width="92" height="92" /></div>` : `<div class="node-thumb"><span class="node-fallback">🐢</span></div>`;
+    node.innerHTML = `<button aria-label="${biome.name}">${thumb}<span>${biome.name}</span></button>`;
+    node.querySelector('button').addEventListener('click', () => selectBiome(biome.id));
     els.mapStage.appendChild(node);
   });
 }
-function renderHuntScene(){
-  const biome=activeBiome();
-  if(!biome){ els.sceneOverlay.innerHTML='<p>Válassz biomot a vadászat indításához.</p>'; els.sceneOverlay.classList.remove('hidden'); return; }
-  els.huntBiomeTitle.textContent=biome.name;
-  els.huntBiomeDesc.textContent=biome.desc;
-  els.biomeLevelBadge.textContent=`Szint ${biomeData(biome.id).level}`;
+function renderHuntScene() {
+  const biome = activeBiome();
+  if (!biome) { els.sceneOverlay.innerHTML = '<p>Válassz biomot a vadászat indításához.</p>'; els.sceneOverlay.classList.remove('hidden'); return; }
+  els.huntBiomeTitle.textContent = biome.name;
+  els.huntBiomeDesc.textContent = biome.desc;
+  els.biomeLevelBadge.textContent = `Szint ${biomeData(biome.id).level}`;
   els.huntScene.style.setProperty('--biome-bg', biome.scene);
-  if(biome.image){ els.huntScene.style.setProperty('--biome-image', `url('../${biome.image}')`); els.huntScene.classList.add('has-image'); }
+  if (biome.image) { els.huntScene.style.setProperty('--biome-image', `url('../${biome.image}')`); els.huntScene.classList.add('has-image'); }
   else { els.huntScene.style.removeProperty('--biome-image'); els.huntScene.classList.remove('has-image'); }
-  const prog=biomeData(biome.id);
-  prog.activeSpawns=prog.activeSpawns.filter(s=>s.expiresAt>now() && !s.caught);
-  els.huntScene.querySelectorAll('.catchable').forEach(n=>{
-    if(!prog.activeSpawns.find(s=>s.id===n.dataset.spawnId)) n.remove();
+  const prog = biomeData(biome.id);
+  prog.activeSpawns = prog.activeSpawns.filter(s => s.expiresAt > now() && !s.caught);
+  els.huntScene.querySelectorAll('.catchable').forEach(n => {
+    if (!prog.activeSpawns.find(s => s.id === n.dataset.spawnId)) n.remove();
   });
-  if(!state.selectedBiome){ els.sceneOverlay.classList.remove('hidden'); return; }
+  if (!state.selectedBiome) { els.sceneOverlay.classList.remove('hidden'); return; }
   els.sceneOverlay.classList.add('hidden');
-  prog.activeSpawns.forEach(spawn=>{
-    let btn=els.huntScene.querySelector(`.catchable[data-spawn-id="${spawn.id}"]`);
-    if(!btn){
-      btn=document.createElement('button');
-      btn.className=`catchable ${spawn.bigCatch?'big-catch':''}`;
-      btn.dataset.spawnId=spawn.id;
-      btn.style.left=`${spawn.x}%`;
-      btn.style.top=`${spawn.y}%`;
-      btn.style.setProperty('--wander-x', `${(Math.random()*2-1)*34}px`);
-      btn.style.setProperty('--wander-y', `${(Math.random()*2-1)*22}px`);
-      btn.style.setProperty('--wander-dur', `${3.2+Math.random()*2.6}s`);
-      btn.style.setProperty('--wander-delay', `${Math.random()*-4}s`);
-      btn.textContent='🐢';
-      btn.addEventListener('click',e=>catchSpawn(spawn.id,e));
+  prog.activeSpawns.forEach(spawn => {
+    let btn = els.huntScene.querySelector(`.catchable[data-spawn-id="${spawn.id}"]`);
+    if (!btn) {
+      btn = document.createElement('button');
+      btn.className = `catchable ${spawn.bigCatch ? 'big-catch' : ''}`;
+      btn.dataset.spawnId = spawn.id;
+      btn.style.left = `${spawn.x}%`;
+      btn.style.top = `${spawn.y}%`;
+      btn.style.setProperty('--wander-x', `${(Math.random() * 2 - 1) * 34}px`);
+      btn.style.setProperty('--wander-y', `${(Math.random() * 2 - 1) * 22}px`);
+      btn.style.setProperty('--wander-dur', `${3.2 + Math.random() * 2.6}s`);
+      btn.style.setProperty('--wander-delay', `${Math.random() * -4}s`);
+      btn.textContent = '🐢';
+      btn.addEventListener('click', e => catchSpawn(spawn.id, e));
       els.huntScene.appendChild(btn);
     }
   });
 }
-function renderBiomeUpgrades(){
-  const biome=activeBiome();
-  const list=els.biomeUpgradeList; list.innerHTML='';
-  if(!biome){ list.innerHTML='<div class="upgrade-card muted">Előbb válassz biomot.</div>'; return; }
-  const prog=biomeData(biome.id);
-  const card=document.createElement('div'); card.className='biome-card';
-  card.innerHTML=`
+function renderBiomeUpgrades() {
+  const biome = activeBiome();
+  const list = els.biomeUpgradeList; list.innerHTML = '';
+  if (!biome) { list.innerHTML = '<div class="upgrade-card muted">Előbb válassz biomot.</div>'; return; }
+  const prog = biomeData(biome.id);
+  const card = document.createElement('div'); card.className = 'biome-card';
+  card.innerHTML = `
     <div class="biome-hero"><img src="${biome.image || ''}" alt="${biome.name}" loading="lazy" width="640" height="360"></div>
     <div><h3>${biome.name} fejlesztések</h3><p>${biome.desc}</p></div>
     <div class="biome-meta-grid">
       <div class="store-card"><div class="muted">Biom szint</div><strong>${prog.level}</strong></div>
       <div class="store-card"><div class="muted">Tokenek</div><strong>${biomeTokenCount(biome.id)}</strong></div>
     </div>
-    <div class="biome-upgrades">${biomeUpgradeDefs(biome.id).map(def=>{
-      const lvl=prog.upgrades[def.id]||0; const maxed=lvl>=def.max; const cost=def.base + def.step*lvl; const enough=def.type==='token'?biomeTokenCount(biome.id)>=cost:state.money>=cost;
-      return `<div class="store-card"><strong>${def.title}</strong><div class="muted">${def.desc}</div><div class="price-line"><span>Szint ${lvl}/${def.max}</span><button class="btn ${def.type==='token'?'secondary':''}" ${maxed||!enough?'disabled':''}>${maxed?'Max':cost+' '+(def.type==='token'? biome.name+' token':'pénz')}</button></div></div>`;
-    }).join('')}</div>
+    <div class="biome-upgrades">${biomeUpgradeDefs(biome.id).map(def => {
+    const lvl = prog.upgrades[def.id] || 0; const maxed = lvl >= def.max; const cost = def.base + def.step * lvl; const enough = def.type === 'token' ? biomeTokenCount(biome.id) >= cost : state.money >= cost;
+    return `<div class="store-card"><strong>${def.title}</strong><div class="muted">${def.desc}</div><div class="price-line"><span>Szint ${lvl}/${def.max}</span><button class="btn ${def.type === 'token' ? 'secondary' : ''}" ${maxed || !enough ? 'disabled' : ''}>${maxed ? 'Max' : cost + ' ' + (def.type === 'token' ? biome.name + ' token' : 'pénz')}</button></div></div>`;
+  }).join('')}</div>
   `;
-  card.querySelectorAll('button').forEach((btn,i)=>btn.addEventListener('click',()=>buyBiomeUpgrade(biome.id, biomeUpgradeDefs(biome.id)[i])));
+  card.querySelectorAll('button').forEach((btn, i) => btn.addEventListener('click', () => buyBiomeUpgrade(biome.id, biomeUpgradeDefs(biome.id)[i])));
   list.appendChild(card);
 }
-function renderStoreSpecies(){
-  const list=els.storeSpeciesList; list.innerHTML='';
-  SPECIES.forEach((s,index)=>{
-    const unlocked=state.storeUnlockedSpecies.includes(s.id);
-    const unlockCost= index===0 ? 200 : 200 + index*180;
-    const card=document.createElement('div'); card.className='store-card';
-    card.innerHTML=`<strong>${s.name}</strong><div class="muted">${unlocked?'Feloldva a store vásárláshoz.':'Ezzel csak a store-os tojásvásárlást oldod fel, vadászatból ettől függetlenül is megszerezhető lehet.'}</div><div class="price-line"><span class="token">Tojás ár: ${fmt(s.eggPrice)}</span><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary unlock-btn" ${unlocked||state.money<unlockCost?'disabled':''}>${unlocked?'Feloldva':unlockCost+' pénz unlock'}</button><button class="btn buy-btn" ${!unlocked||state.money<s.eggPrice?'disabled':''}>Tojás vásárlás</button></div></div>`;
-    card.querySelector('.unlock-btn').addEventListener('click',()=>unlockSpecies(s.id,unlockCost));
-    card.querySelector('.buy-btn').addEventListener('click',()=>buyEgg(s.id));
+function renderStoreSpecies() {
+  const list = els.storeSpeciesList; list.innerHTML = '';
+  SPECIES.forEach((s, index) => {
+    const unlocked = state.storeUnlockedSpecies.includes(s.id);
+    const unlockCost = index === 0 ? 200 : 200 + index * 180;
+    const card = document.createElement('div'); card.className = 'store-card';
+    card.innerHTML = `<strong>${s.name}</strong><div class="muted">${unlocked ? 'Feloldva a store vásárláshoz.' : 'Ezzel csak a store-os tojásvásárlást oldod fel, vadászatból ettől függetlenül is megszerezhető lehet.'}</div><div class="price-line"><span class="token">Tojás ár: ${fmt(s.eggPrice)}</span><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary unlock-btn" ${unlocked || state.money < unlockCost ? 'disabled' : ''}>${unlocked ? 'Feloldva' : unlockCost + ' pénz unlock'}</button><button class="btn buy-btn" ${!unlocked || state.money < s.eggPrice ? 'disabled' : ''}>Tojás vásárlás</button></div></div>`;
+    card.querySelector('.unlock-btn').addEventListener('click', () => unlockSpecies(s.id, unlockCost));
+    card.querySelector('.buy-btn').addEventListener('click', () => buyEgg(s.id));
     list.appendChild(card);
   });
 }
-function renderGlobalStore(){
-  const list=els.globalStoreList; list.innerHTML='';
-  const revealCard=document.createElement('div'); revealCard.className='store-card';
-  revealCard.innerHTML=`<strong>Reveal skip</strong><div class="muted">Globális quality-of-life upgrade: a jövőbeli fogásoknál átugorható a reward felfedés. A skippelhető reward flow-ok csökkentik a hosszú távú frusztrációt. [web:105][web:112]</div><div class="price-line"><span class="token">800 pénz</span><button class="btn" ${state.globalUpgrades.revealSkip||state.money<800?'disabled':''}>${state.globalUpgrades.revealSkip?'Megvett': 'Megvásárlás'}</button></div>`;
-  revealCard.querySelector('button').addEventListener('click',buyRevealSkip);
+function renderGlobalStore() {
+  const list = els.globalStoreList; list.innerHTML = '';
+  const revealCard = document.createElement('div'); revealCard.className = 'store-card';
+  revealCard.innerHTML = `<strong>Reveal skip</strong><div class="muted">Globális quality-of-life upgrade: a jövőbeli fogásoknál átugorható a reward felfedés. A skippelhető reward flow-ok csökkentik a hosszú távú frusztrációt. [web:105][web:112]</div><div class="price-line"><span class="token">800 pénz</span><button class="btn" ${state.globalUpgrades.revealSkip || state.money < 800 ? 'disabled' : ''}>${state.globalUpgrades.revealSkip ? 'Megvett' : 'Megvásárlás'}</button></div>`;
+  revealCard.querySelector('button').addEventListener('click', buyRevealSkip);
   list.appendChild(revealCard);
 }
-function renderBiomeUnlocks(){
-  const list=els.biomeUnlockList; list.innerHTML='';
-  const active=activeBiome();
-  if(active){
-    const prog=biomeData(active.id);
-    const card=document.createElement('div'); card.className='biome-card';
-    card.innerHTML=`
+function renderBiomeUnlocks() {
+  const list = els.biomeUnlockList; list.innerHTML = '';
+  const active = activeBiome();
+  if (active) {
+    const prog = biomeData(active.id);
+    const card = document.createElement('div'); card.className = 'biome-card';
+    card.innerHTML = `
       <div class="biome-hero"><img src="${active.image || ''}" alt="${active.name}" loading="lazy" width="640" height="360"></div>
       <div><h3>${active.name}</h3><p>${active.desc}</p></div>
       <div class="biome-meta-grid">
@@ -185,68 +185,68 @@ function renderBiomeUnlocks(){
         <div class="store-card"><div class="muted">Nyitott fajok</div><strong>${active.species.length}</strong></div>
       </div>
       <div class="store-card"><div class="muted">Biom tulajdonságok</div><div class="badge-row">${[
-        `<span class="badge">Spawn ${prog.upgrades.spawnRate||0}</span>`,
-        `<span class="badge">Láthatóság ${prog.upgrades.visibleTime||0}</span>`,
-        `<span class="badge">Egyidejű ${prog.upgrades.simultaneous||0}</span>`,
-        `<span class="badge">Ritka esély ${prog.upgrades.rareChance||0}</span>`
+        `<span class="badge">Spawn ${prog.upgrades.spawnRate || 0}</span>`,
+        `<span class="badge">Láthatóság ${prog.upgrades.visibleTime || 0}</span>`,
+        `<span class="badge">Egyidejű ${prog.upgrades.simultaneous || 0}</span>`,
+        `<span class="badge">Ritka esély ${prog.upgrades.rareChance || 0}</span>`
       ].join('')}</div></div>
     `;
     list.appendChild(card);
   }
-  const unlocks=document.createElement('div'); unlocks.className='biome-unlocks-grid';
-  BIOMES.filter(b=>!state.unlockedBiomes.includes(b.id)).forEach(b=>{
-    const card=document.createElement('div'); card.className='store-card';
-    card.innerHTML=`<strong>${b.name}</strong><div class="muted">${b.desc}</div><div class="price-line"><span class="token">${fmt(b.unlockCost)} pénz</span><button class="btn" ${state.money<b.unlockCost?'disabled':''}>Biom feloldása</button></div>`;
-    card.querySelector('button').addEventListener('click',()=>unlockBiome(b.id));
+  const unlocks = document.createElement('div'); unlocks.className = 'biome-unlocks-grid';
+  BIOMES.filter(b => !state.unlockedBiomes.includes(b.id)).forEach(b => {
+    const card = document.createElement('div'); card.className = 'store-card';
+    card.innerHTML = `<strong>${b.name}</strong><div class="muted">${b.desc}</div><div class="price-line"><span class="token">${fmt(b.unlockCost)} pénz</span><button class="btn" ${state.money < b.unlockCost ? 'disabled' : ''}>Biom feloldása</button></div>`;
+    card.querySelector('button').addEventListener('click', () => unlockBiome(b.id));
     unlocks.appendChild(card);
   });
   list.appendChild(unlocks);
-  if(!BIOMES.filter(b=>!state.unlockedBiomes.includes(b.id)).length && !active) list.innerHTML='<div class="store-card muted">Minden jelenlegi biom fel van oldva.</div>';
+  if (!BIOMES.filter(b => !state.unlockedBiomes.includes(b.id)).length && !active) list.innerHTML = '<div class="store-card muted">Minden jelenlegi biom fel van oldva.</div>';
 }
-function renderReveal(){
-  const pending=state.pendingReveal;
-  if(!pending){
+function renderReveal() {
+  const pending = state.pendingReveal;
+  if (!pending) {
     els.revealPanel.classList.remove('open');
     return;
   }
   els.revealPanel.classList.add('open');
-  if(pending.spinning){
+  if (pending.spinning) {
     els.mysteryState.classList.remove('hidden');
     els.mysteryState.classList.add('spinning');
-    els.revealResult.className='reveal-result';
-    els.revealResult.innerHTML='';
+    els.revealResult.className = 'reveal-result';
+    els.revealResult.innerHTML = '';
     els.revealBtn.classList.add('hidden');
     els.revealCloseBtn.classList.add('hidden');
     return;
   }
-  if(!pending.revealed){
+  if (!pending.revealed) {
     els.mysteryState.classList.remove('hidden');
     els.mysteryState.classList.remove('spinning');
-    els.mysteryState.innerHTML='<div class="mystery">?</div><p class="muted">Rejtett jutalom</p>';
-    els.revealResult.className='reveal-result';
-    els.revealResult.innerHTML='';
+    els.mysteryState.innerHTML = '<div class="mystery">?</div><p class="muted">Rejtett jutalom</p>';
+    els.revealResult.className = 'reveal-result';
+    els.revealResult.innerHTML = '';
     els.revealBtn.classList.remove('hidden');
     els.revealCloseBtn.classList.add('hidden');
     return;
   }
-  const s=speciesById(pending.speciesId);
-  const visual=turtleVisual(pending.speciesId,pending.rarity,pending.stage);
+  const s = speciesById(pending.speciesId);
+  const visual = turtleVisual(pending.speciesId, pending.rarity, pending.stage);
   els.mysteryState.classList.add('hidden');
   els.mysteryState.classList.remove('spinning');
-  els.revealResult.className='reveal-result show';
-  els.revealResult.innerHTML=`<div class="reveal-turtle" style="--art-bg:linear-gradient(180deg, ${visual.bgA}, ${visual.bgB})"><span class="turtle-emoji" style="font-size:4rem;filter:hue-rotate(${speciesHue(pending.speciesId)}deg) saturate(1.45) brightness(1.02);">${visual.emoji}</span></div><h3>${s.name}</h3><div class="rarity-row"><span class="badge rarity-${pending.rarity}">${RARITIES[pending.rarity].label}</span><span class="badge stage">${STAGE_LABEL[pending.stage]}</span></div><p class="muted">Eladási érték: <strong>${fmt(turtleValue(pending))} pénz</strong></p>`;
+  els.revealResult.className = 'reveal-result show';
+  els.revealResult.innerHTML = `<div class="reveal-turtle" style="--art-bg:linear-gradient(180deg, ${visual.bgA}, ${visual.bgB})"><span class="turtle-emoji" style="font-size:4rem;filter:hue-rotate(${speciesHue(pending.speciesId)}deg) saturate(1.45) brightness(1.02);">${visual.emoji}</span></div><h3>${s.name}</h3><div class="rarity-row"><span class="badge rarity-${pending.rarity}">${RARITIES[pending.rarity].label}</span><span class="badge stage">${STAGE_LABEL[pending.stage]}</span></div><p class="muted">Eladási érték: <strong>${fmt(turtleValue(pending))} pénz</strong></p>`;
   els.revealBtn.classList.add('hidden');
   els.revealCloseBtn.classList.remove('hidden');
 }
-function renderRevealSpinFrame(elapsedMs){
-  if(!els.mysteryState.classList.contains('spinning')) return;
-  const frame=revealSpinFrame;
-  if(!frame) return;
-  const visual=turtleVisual(frame.speciesId,frame.rarity,'young');
-  const remainingSec=Math.max(0,Math.ceil((REVEAL_SPIN_MS-elapsedMs)/1000));
-  const isFinal=state.pendingReveal && state.pendingReveal.revealed;
-  els.mysteryState.innerHTML=`
-    <div class="spin-stage ${isFinal?'final':''}">
+function renderRevealSpinFrame(elapsedMs) {
+  if (!els.mysteryState.classList.contains('spinning')) return;
+  const frame = revealSpinFrame;
+  if (!frame) return;
+  const visual = turtleVisual(frame.speciesId, frame.rarity, 'young');
+  const remainingSec = Math.max(0, Math.ceil((REVEAL_SPIN_MS - elapsedMs) / 1000));
+  const isFinal = state.pendingReveal && state.pendingReveal.revealed;
+  els.mysteryState.innerHTML = `
+    <div class="spin-stage ${isFinal ? 'final' : ''}">
       <div class="spin-stars">${'<span class="spin-star"></span>'.repeat(12)}</div>
       <div class="spin-turtle" style="--art-bg:linear-gradient(180deg, ${visual.bgA}, ${visual.bgB})">
         <span class="turtle-emoji" style="font-size:3.4rem;filter:hue-rotate(${speciesHue(frame.speciesId)}deg) saturate(1.45) brightness(1.02);">${visual.emoji}</span>
@@ -256,4 +256,4 @@ function renderRevealSpinFrame(elapsedMs){
     <p class="muted spin-countdown">Sorsolás… ${remainingSec}s</p>
   `;
 }
-function rerender(){ renderHud(); renderTabs(); renderBoard(); renderCatchLog(); renderMap(); renderHuntScene(); renderBiomeUpgrades(); renderStoreSpecies(); renderGlobalStore(); renderBiomeUnlocks(); renderReveal(); els.contextHint.textContent=CONTEXT_HINTS[state.currentHint]||state.currentHint; save(); }
+function rerender() { renderHud(); renderTabs(); renderBoard(); renderCatchLog(); renderMap(); renderHuntScene(); renderBiomeUpgrades(); renderStoreSpecies(); renderGlobalStore(); renderBiomeUnlocks(); renderReveal(); els.contextHint.textContent = CONTEXT_HINTS[state.currentHint] || state.currentHint; save(); }
