@@ -1,4 +1,4 @@
-import BrandLogo from '../svg/logo.js'
+import BrandLogo from '../../svg/logo.js'
 
 export class BrandMark {
     #div;

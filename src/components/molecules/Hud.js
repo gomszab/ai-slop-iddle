@@ -12,13 +12,20 @@ export class HUD {
      * 
      * @param {HudInfo[]} pillList 
      */
-    constructor(pillList){
+    constructor(pillList = []){
         this.#div = document.createElement('div');
         this.#div.className = 'hud';
-        pillList.forEach(pill => {
-            this.#div.appendChild(pill.div);
-        })
         this.#pillList = pillList
+        this.mountItems();
+    }
+
+    setItems(pillList){
+        this.#pillList = pillList;
+        this.mountItems();
+    }
+
+    mountItems(){
+        this.#div.replaceChildren(...this.#pillList.map(pill => pill.div));
     }
 
     rerender(){

@@ -10,9 +10,18 @@ export class Navbar{
     constructor(buttonList){
         const nav = document.createElement('nav');
         nav.className = 'tabs';
-        buttonList.forEach(b => nav.appendChild(b.button))
         this.#nav = nav;
         this.#buttonList = buttonList;
+        this.mountItems();
+    }
+
+    setItems(buttonList){
+        this.#buttonList = buttonList;
+        this.mountItems();
+    }
+
+    mountItems(){
+        this.#nav.replaceChildren(...this.#buttonList.map(b => b.button));
     }
 
     get nav(){
