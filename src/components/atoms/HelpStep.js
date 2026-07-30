@@ -1,21 +1,15 @@
-export class HelpStep {
-    #div;
+import { GenericAtom } from "./GenericAtom.js";
 
+export class HelpStep extends GenericAtom {
     constructor(num, text){
-        const div = document.createElement('div');
-        div.className = 'help-step';
+        super('div', 'help-step');
         const numberDiv = document.createElement('div')
         numberDiv.className = 'step-badge';
         numberDiv.textContent = num;
-        div.appendChild(numberDiv);
+        this.appendChild(numberDiv);
 
         const textDiv = document.createElement('div');
         textDiv.innerHTML = text;
-        div.appendChild(textDiv);
-        this.#div = div;
-    }
-
-    get div(){
-        return this.#div;
+        this.appendChild(textDiv);
     }
 }

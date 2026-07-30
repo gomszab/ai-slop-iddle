@@ -1,14 +1,9 @@
-export class BoxTitle{
-    #elem;
+import { GenericAtom } from "./GenericAtom.js";
 
+export class BoxTitle extends GenericAtom{
     constructor(text, size){
-        const elem = document.createElement(getTag(size))
-        elem.innerText = text;
-        this.#elem = elem;
-    }
-
-    get elem(){
-        return this.#elem;
+        super(getTag(size),'');
+        this.text = text;
     }
 }
 

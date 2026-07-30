@@ -1,25 +1,22 @@
-export class HudInfo {
+import { GenericAtom } from "./GenericAtom.js";
+
+export class HudInfo extends GenericAtom {
     #text;
-    #div;
     #cb;
 
-    get div(){
-        return this.#div;
-    }
     /**
      * 
      * @param {string} text 
      * @param {updateCallback} cb 
      */
-    constructor(text, cb){
+    constructor(text, cb) {
+        super('div', 'pill');
         this.#text = text;
-        this.#div = document.createElement('div');
-        this.#div.className = 'pill';
-        this.#div.appendChild(this.#createText(0));
+        this.appendChild(this.#createText(0));
         this.#cb = cb;
     }
 
-    #createText(value){
+    #createText(value) {
         const small = document.createElement('small');
         small.innerText = this.#text;
         const bold = document.createElement('b');
@@ -28,8 +25,8 @@ export class HudInfo {
         return small;
     }
 
-    update(){
-        this.#div.innerHTML = '';
-        this.#div.appendChild(this.#createText(this.#cb()))
+    update() {
+        this.clear();
+        this.appendChild(this.#createText(this.#cb()));
     }
 }

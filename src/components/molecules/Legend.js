@@ -1,7 +1,7 @@
 import { GenericMolecule } from "./GenericMolecule.js";
 
-export class HelpSteps extends GenericMolecule{
+export class Legend extends GenericMolecule{
     constructor(){
-        super('div', 'help-steps');
+        super('div', 'legend')
     }
 }

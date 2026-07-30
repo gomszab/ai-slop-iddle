@@ -1,14 +1,9 @@
-export class BoxDesc{
+import { GenericAtom } from "./GenericAtom.js";
 
-    #desc
+export class BoxDesc extends GenericAtom{
 
     constructor(text){
-        this.#desc = document.createElement('p');
-        this.#desc.className = 'muted';
-        this.#desc.innerText = text;
-    }
-
-    get desc() {
-        return this.#desc;
+        super('p', 'muted');
+        this.text = text;
     }
 }

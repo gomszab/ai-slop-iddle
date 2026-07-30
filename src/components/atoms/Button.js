@@ -1,22 +1,17 @@
-export class Button{
+import { GenericAtom } from "./GenericAtom.js";
 
-    #button;
+export class Button extends GenericAtom{
+
     #updateCallback
 
-    get button(){
-        return this.#button;
-    }
-
     constructor(id, text, cssClasses){
-        this.#button = document.createElement('button');
-        this.#button.className = cssClasses;
-        this.#button.innerText = text;
-        this.#button.id = id;
+        super('button', cssClasses);
+        this.text = text;
+        this.id = id;
     }
 
     registerCallback(cb){
-        this.#button.addEventListener('click', (e) => {
-            console.log('click');
+        this.html.addEventListener('click', (e) => {
             cb(e);
         })
     }
@@ -27,7 +22,7 @@ export class Button{
 
     update(){
         if(this.#updateCallback){
-            this.#updateCallback(this.#button);
+            this.#updateCallback(this.html);
         }
     }
 }

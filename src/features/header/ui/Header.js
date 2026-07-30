@@ -34,8 +34,8 @@ export class Header {
         const gameTitle = new BrandMark();
         inner.appendChild(gameTitle.div);
 
-        this.#hud = new HUD([]);
-        inner.appendChild(this.#hud.div);
+        this.#hud = new HUD();
+        inner.appendChild(this.#hud.html);
 
         const themeButton = new Button("themeBtn", "◐", "theme-btn");
         themeButton.registerCallback(() => {
@@ -44,10 +44,10 @@ export class Header {
             root.setAttribute("data-theme", next);
             themeButton.button.textContent = next === "dark" ? "☀" : "◐";
         });
-        inner.appendChild(themeButton.button);
+        inner.appendChild(themeButton.html);
 
-        this.#navbar = new Navbar([]);
-        header.appendChild(this.#navbar.nav);
+        this.#navbar = new Navbar();
+        header.appendChild(this.#navbar.html);
 
         this.#unsubscribe = this.#controller.subscribe(() => this.rerender());
     }
@@ -58,7 +58,7 @@ export class Header {
         const hudItems = this.#controller.getHudElements().map(item =>
             new HudInfo(item.text, () => this.#controller.getHudValue(item.id))
         );
-        this.#hud.setItems(hudItems);
+        this.#hud.setElementList(hudItems);
 
         const navButtons = this.#controller.getNavbarElements().map(item => {
             const button = new Button(item.id, item.text, "tab");
@@ -74,7 +74,7 @@ export class Header {
             return button;
         });
 
-        this.#navbar.setItems(navButtons);
+        this.#navbar.setElementList(navButtons);
         this.rerender();
     }
 
