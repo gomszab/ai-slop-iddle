@@ -1,0 +1,234 @@
+/* ==========================================================================
+   Component: Reveal modal (mystery capture reveal + spin animation)
+   HTML: .reveal-panel#revealPanel (.reveal-card, .reveal-shell, #mysteryState,
+         .mystery, .spin-stage, .spin-star, .spin-turtle, .spin-rarity-badge,
+         .spin-countdown, .reveal-result, .result-art)
+   ========================================================================== */
+
+.reveal-panel {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  z-index: 60;
+  padding: 20px;
+  place-items: center;
+}
+
+.reveal-panel.open {
+  display: grid;
+}
+
+.reveal-card {
+  width: min(520px, 94vw);
+  background: var(--surface);
+  border-radius: 28px;
+  padding: 22px;
+  box-shadow: 0 26px 60px rgba(0, 0, 0, .24);
+  display: grid;
+  gap: 16px;
+  text-align: center;
+}
+
+.reveal-shell {
+  border-radius: 24px;
+  padding: 24px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--gold) 12%, var(--surface-2)), var(--surface-2));
+  border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mystery {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-size: 3rem;
+  box-shadow: var(--shadow);
+}
+
+#mysteryState.spinning {
+  width: 100%;
+}
+
+.spin-stage {
+  position: relative;
+  width: 100%;
+  min-height: 210px;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+}
+
+.spin-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.spin-star {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  box-shadow: 0 0 8px 2px color-mix(in srgb, var(--gold) 70%, transparent);
+  animation: spin-orbit 2.4s linear infinite;
+  top: 50%;
+  left: 50%;
+}
+
+.spin-star:nth-child(1) { animation-delay: 0s; --r: 70px; }
+.spin-star:nth-child(2) { animation-delay: -.24s; --r: 78px; }
+.spin-star:nth-child(3) { animation-delay: -.48s; --r: 64px; }
+.spin-star:nth-child(4) { animation-delay: -.72s; --r: 86px; }
+.spin-star:nth-child(5) { animation-delay: -.96s; --r: 72px; }
+.spin-star:nth-child(6) { animation-delay: -1.2s; --r: 80px; }
+.spin-star:nth-child(7) { animation-delay: -1.44s; --r: 66px; }
+.spin-star:nth-child(8) { animation-delay: -1.68s; --r: 90px; }
+.spin-star:nth-child(9) { animation-delay: -1.92s; --r: 74px; }
+.spin-star:nth-child(10) { animation-delay: -2.16s; --r: 82px; }
+
+@keyframes spin-orbit {
+  0% {
+    transform: rotate(0deg) translateX(var(--r, 74px)) scale(.6);
+    opacity: .25;
+  }
+
+  50% {
+    transform: rotate(180deg) translateX(var(--r, 74px)) scale(1.15);
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(360deg) translateX(var(--r, 74px)) scale(.6);
+    opacity: .25;
+  }
+}
+
+.spin-turtle {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--art-bg, #d7e7d4);
+  box-shadow: var(--shadow);
+  animation: spin-pop .08s ease;
+  z-index: 1;
+}
+
+@keyframes spin-pop {
+  from {
+    transform: scale(.85);
+  }
+
+  to {
+    transform: scale(1);
+  }
+}
+
+.spin-rarity-badge {
+  z-index: 1;
+  animation: spin-pop .08s ease;
+}
+
+.spin-countdown {
+  font-weight: 700;
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin-star {
+    animation: none;
+    opacity: .5;
+  }
+
+  .spin-turtle,
+  .spin-rarity-badge {
+    animation: none;
+  }
+}
+
+.reveal-result {
+  display: none;
+  gap: 12px;
+}
+
+.reveal-result.show {
+  display: grid;
+}
+
+.result-art {
+  height: 130px;
+  border-radius: 20px;
+  display: grid;
+  place-items: center;
+  font-size: 4rem;
+  background: var(--art-bg, #d7e7d4);
+}
+
+/* Fireworks variant when the reveal result is a top-tier rarity */
+.spin-stage.final .spin-turtle {
+  animation: firework-pop .22s ease-out, firework-flicker 1.4s ease-in-out 3;
+}
+
+.spin-stage.final .spin-stars .spin-star {
+  animation: spin-orbit 4.2s linear infinite, star-twinkle 1s ease-in-out infinite alternate;
+}
+
+.spin-stage.final::after {
+  content: '';
+  position: absolute;
+  inset: 20%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, .9) 0 10%, rgba(255, 222, 127, .78) 10% 18%, transparent 18% 28%, rgba(255, 163, 78, .55) 28% 36%, transparent 36% 50%);
+  filter: blur(1px);
+  animation: burst 2.2s ease-out 1;
+  pointer-events: none;
+}
+
+.spin-stage.final::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 48%, rgba(255, 255, 255, .28), transparent 38%);
+  animation: glow 2.2s ease-out 1;
+  pointer-events: none;
+}
+
+@keyframes firework-pop {
+  0% { transform: scale(.88); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+@keyframes firework-flicker {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.18); }
+}
+
+@keyframes star-twinkle {
+  from { opacity: .45; transform: scale(.85); }
+  to { opacity: 1; transform: scale(1.15); }
+}
+
+@keyframes burst {
+  0% { transform: scale(.4); opacity: 0; }
+  20% { opacity: 1; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+@keyframes glow {
+  0% { opacity: 0; }
+  20% { opacity: 1; }
+  100% { opacity: 0; }
+}

@@ -1,0 +1,52 @@
+/* ==========================================================================
+   Component: Biome card (rendered biome summary used in store/hunt lists)
+   HTML: .biome-card (.biome-hero, .biome-upgrades, .biome-unlocks-grid,
+         .biome-meta-grid) — populated dynamically by JS
+   ========================================================================== */
+
+.biome-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.biome-card {
+  display: grid;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 82%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+}
+
+.biome-card .biome-hero {
+  height: 150px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--biome-bg, linear-gradient(180deg, #cfe7d7, #a8cab7));
+  position: relative;
+}
+
+.biome-card .biome-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.biome-card .biome-hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .08), rgba(0, 0, 0, .12));
+}
+
+.biome-upgrades {
+  display: grid;
+  gap: 12px;
+}
+
+.biome-unlocks-grid {
+  display: grid;
+  gap: 12px;
+}

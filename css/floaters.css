@@ -1,0 +1,45 @@
+/* ==========================================================================
+   Component: Floating reward text (money/good/bad pop-up numbers)
+   HTML: .floaters#floaters > .floater(.money|.good|.bad)
+   ========================================================================== */
+
+.floaters {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 65;
+}
+
+.floater {
+  position: fixed;
+  font-weight: 900;
+  animation: rise .9s ease forwards;
+}
+
+.floater.money {
+  color: var(--gold);
+}
+
+.floater.good {
+  color: var(--primary);
+}
+
+.floater.bad {
+  color: var(--danger);
+}
+
+@keyframes rise {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(.9);
+  }
+
+  15% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-26px) scale(1.05);
+  }
+}

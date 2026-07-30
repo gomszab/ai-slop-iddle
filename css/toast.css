@@ -1,0 +1,40 @@
+/* ==========================================================================
+   Component: Toast notifications (bottom-right stacked messages)
+   HTML: .toast-wrap#toastWrap > .toast(.bad)
+   ========================================================================== */
+
+.toast-wrap {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  display: grid;
+  gap: 10px;
+  z-index: 70;
+}
+
+.toast {
+  background: var(--surface);
+  color: var(--text);
+  padding: 12px 14px;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+  font-weight: 800;
+  animation: toastIn .2s ease;
+}
+
+.toast.bad {
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+}
+
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

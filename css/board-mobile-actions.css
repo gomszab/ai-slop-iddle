@@ -1,0 +1,39 @@
+/* ==========================================================================
+   Component: Board mobile action bar (sell/breed shortcuts on small screens)
+   HTML: .board-mobile-actions.mobile-board-shell #mobileSellBtn #mobileBreedBtn
+   ========================================================================== */
+
+.board-wrap {
+  display: grid;
+  gap: 16px;
+}
+
+.board-mobile-actions {
+  display: none;
+}
+
+.desktop-board-actions {
+  display: grid;
+}
+
+@media (max-width: 720px) {
+  .board-mobile-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .desktop-board-actions {
+    display: none;
+  }
+
+  .mobile-board-shell {
+    display: grid;
+  }
+}
+
+@media (max-width: 540px) {
+  .board-mobile-actions .btn {
+    width: 100%;
+  }
+}

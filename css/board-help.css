@@ -1,0 +1,50 @@
+/* ==========================================================================
+   Component: Board help panel (rules, rarity legend, contextual hint)
+   HTML: aside.panel#boardHelpPanel (.help-steps, .help-step, .step-badge, .legend)
+   ========================================================================== */
+
+.help-steps {
+  display: grid;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.help-step {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--surface-2);
+  padding: 12px;
+  border-radius: 16px;
+}
+
+.step-badge {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+  flex: none;
+}
+
+.legend {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+@media (max-width: 540px) {
+  .help-steps,
+  .boardHelpPanel {
+    display: none;
+  }
+}

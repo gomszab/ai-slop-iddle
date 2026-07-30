@@ -1,0 +1,100 @@
+/* ==========================================================================
+   Component: Buttons (generic .btn variants, small/icon buttons)
+   HTML: any <button class="btn ..."> / .small-btn / .icon-btn across views
+   ========================================================================== */
+
+.btn {
+  background: var(--primary);
+  color: #fff;
+  padding: 11px 14px;
+  border-radius: 14px;
+  font-weight: 800;
+  transition: transform .15s ease, filter .15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.04);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: .45;
+  transform: none;
+}
+
+.btn.secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+}
+
+.btn.gold {
+  background: linear-gradient(135deg, #e3b04b, var(--gold));
+  color: #352300;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px dashed color-mix(in srgb, var(--text) 18%, transparent);
+  color: var(--text);
+}
+
+.small-btn {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+  font-weight: 800;
+  color: var(--text);
+}
+
+.small-btn.primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.small-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.icon-btn {
+  min-height: 40px;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+  display: grid;
+  place-items: center;
+  color: var(--text);
+  font-weight: 800;
+}
+
+.icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.icon-btn.primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.icon-btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+@media (max-width: 720px) {
+  .icon-btn {
+    min-height: 36px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 540px) {
+  .icon-btn {
+    min-height: 34px;
+    border-radius: 10px;
+  }
+}

@@ -1,0 +1,35 @@
+/* ==========================================================================
+   Component: Generic list cards (catch log, biome upgrades, store items)
+   HTML: .log-list#catchLog, .upgrade-list#biomeUpgradeList,
+         .store-list (#storeSpeciesList, #globalStoreList, #biomeUnlockList)
+   ========================================================================== */
+
+.log-list,
+.upgrade-list,
+.store-list {
+  display: grid;
+  gap: 10px;
+}
+
+.log-item,
+.upgrade-card,
+.store-card {
+  background: var(--surface-2);
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+}
+
+.upgrade-card strong,
+.store-card strong {
+  display: block;
+  margin-bottom: 4px;
+}
+
+.price-line {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}

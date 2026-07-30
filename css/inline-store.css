@@ -1,0 +1,54 @@
+/* ==========================================================================
+   Component: Inline / quick store (species-row of purchasable egg cards)
+   HTML: .inline-store#inlineStorePanel > .species-row > .store-egg-card
+   ========================================================================== */
+
+.inline-store {
+  display: grid;
+  gap: 12px;
+  background: var(--surface-2);
+  border: 1px dashed color-mix(in srgb, var(--text) 14%, transparent);
+  padding: 14px;
+  border-radius: 20px;
+}
+
+.species-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.store-egg-card {
+  background: var(--surface);
+  border-radius: 18px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+  display: grid;
+  gap: 8px;
+  min-width: 150px;
+  flex: 1;
+}
+
+@media (max-width: 720px) {
+  .inline-store {
+    padding: 12px;
+  }
+}
+
+@media (max-width: 540px) {
+  .species-row {
+    flex-direction: column;
+  }
+
+  .store-egg-card {
+    min-width: unset;
+  }
+
+  .inline-store {
+    display: none;
+  }
+
+  .inline-store.open {
+    display: grid;
+  }
+}

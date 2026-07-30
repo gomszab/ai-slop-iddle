@@ -1,0 +1,99 @@
+/* ==========================================================================
+   Layout: app shell, main content region, view switching, generic panel
+   ========================================================================== */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 18px;
+  display: grid;
+  gap: 18px;
+  flex: 1;
+}
+
+.view {
+  display: none;
+}
+
+.view.active {
+  display: block;
+}
+
+.board-layout {
+  display: grid;
+  grid-template-columns: 260px 1fr 320px;
+  gap: 18px;
+}
+
+.hunt-layout {
+  display: grid;
+  grid-template-columns: 320px 1fr 320px;
+  gap: 18px;
+}
+
+.panel {
+  background: var(--surface);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid color-mix(in srgb, var(--text) 8%, transparent);
+  padding: 18px;
+}
+
+.panel h2 {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  margin-bottom: 10px;
+}
+
+.panel h3 {
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+
+.footer-note {
+  padding: 8px 18px 18px;
+  max-width: 1500px;
+  margin: 0 auto;
+  width: 100%;
+  color: var(--muted);
+  font-size: .88rem;
+}
+
+@media (max-width: 1180px) {
+  .board-layout,
+  .hunt-layout,
+  .board-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 720px) {
+  .board-layout {
+    gap: 12px;
+  }
+
+  .panel {
+    border-radius: 18px;
+    padding: 14px;
+  }
+
+  .panel h2 {
+    font-size: 1.15rem;
+  }
+}
+
+@media (max-width: 540px) {
+  .main {
+    padding: 10px;
+  }
+}

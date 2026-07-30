@@ -1,0 +1,238 @@
+/* ==========================================================================
+   Component: Turtle card (grid, card, artwork, badges, progress, actions)
+   HTML: .board-grid#boardGrid > .card (.card-top, .turtle-art, .turtle-glyph,
+         .turtle-emoji, .badge, .meta, .name, .sub, .progress, .bar,
+         .stats-list, .card-actions, .card-icon-actions, .compact-note)
+   ========================================================================== */
+
+.board-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(205px, 1fr));
+  gap: 14px;
+  min-height: 360px;
+}
+
+.empty-state {
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 48px 20px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--primary) 8%, var(--surface)) 0%, var(--surface-2) 100%);
+  border: 1px dashed color-mix(in srgb, var(--text) 12%, transparent);
+}
+
+.card {
+  background: var(--surface-2);
+  border: 1px solid color-mix(in srgb, var(--text) 10%, transparent);
+  border-radius: 22px;
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+  position: relative;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.card:hover {
+  box-shadow: var(--shadow);
+}
+
+.card.selected {
+  outline: 3px solid color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.turtle-art {
+  height: 78px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .12), transparent 40%), linear-gradient(180deg, var(--art-sky, #dff1f6), var(--art-ground, #b8d59a));
+  display: grid;
+  place-items: center;
+  font-size: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.turtle-art::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .28);
+}
+
+.turtle-art::after {
+  content: '';
+  position: absolute;
+  inset: auto auto 0 0;
+  height: 36px;
+  width: 100%;
+  background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .05));
+}
+
+.turtle-glyph {
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, .18));
+  display: grid;
+  place-items: center;
+}
+
+.turtle-emoji {
+  font-size: 3rem;
+  line-height: 1;
+  display: block;
+}
+
+.card-icon-actions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.compact-note {
+  font-size: .72rem;
+  color: var(--muted);
+}
+
+.badge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .02em;
+}
+
+.badge.stage {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.badge-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.meta {
+  display: grid;
+  gap: 4px;
+}
+
+.name {
+  font-weight: 900;
+  font-size: 1rem;
+}
+
+.sub {
+  font-size: .82rem;
+  color: var(--muted);
+}
+
+.progress {
+  height: 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--text) 10%, transparent);
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  width: 0%;
+}
+
+.stats-list {
+  display: grid;
+  gap: 6px;
+  font-size: .83rem;
+  color: var(--muted);
+}
+
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+@media (max-width: 720px) {
+  .board-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .card-actions {
+    display: none;
+  }
+
+  .card-icon-actions {
+    display: grid;
+  }
+
+  .card {
+    gap: 7px;
+    padding: 10px;
+    border-radius: 18px;
+  }
+
+  .name {
+    font-size: .86rem;
+    line-height: 1.15;
+  }
+
+  .sub {
+    font-size: .7rem;
+  }
+
+  .badge {
+    padding: 4px 7px;
+    font-size: .64rem;
+  }
+
+  .stats-list {
+    display: none;
+  }
+
+  .turtle-art {
+    height: 64px;
+  }
+}
+
+@media (max-width: 540px) {
+  .board-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  .turtle-art {
+    height: 60px;
+  }
+
+  .card-top {
+    gap: 6px;
+  }
+
+  .progress {
+    height: 7px;
+  }
+
+  .badge.stage {
+    font-size: .64rem;
+  }
+
+  .fresh-pill {
+    font-size: .68rem;
+    padding: 6px 10px;
+  }
+}

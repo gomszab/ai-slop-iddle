@@ -1,0 +1,51 @@
+/* ==========================================================================
+   Component: Drop zones (breed / sell targets under the board grid)
+   HTML: .dropzones > .dropzone.breed#breedZone / .dropzone.sell#sellZone
+   ========================================================================== */
+
+.dropzones {
+  display: grid;
+  gap: 12px;
+}
+
+.dropzone {
+  border-radius: 22px;
+  padding: 18px;
+  border: 2px dashed color-mix(in srgb, var(--text) 14%, transparent);
+  background: var(--surface-2);
+  display: grid;
+  gap: 6px;
+  min-height: 110px;
+  transition: transform .15s ease, border-color .15s ease, background .15s ease;
+}
+
+.dropzone.active {
+  transform: translateY(-2px);
+}
+
+.dropzone.sell.active {
+  border-color: var(--gold);
+  background: color-mix(in srgb, var(--gold) 12%, var(--surface-2));
+}
+
+.dropzone.breed.active {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 10%, var(--surface-2));
+}
+
+@media (max-width: 720px) {
+  .dropzones {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dropzone {
+    padding: 14px;
+    min-height: unset;
+  }
+}
+
+@media (max-width: 540px) {
+  .dropzones {
+    grid-template-columns: 1fr;
+  }
+}

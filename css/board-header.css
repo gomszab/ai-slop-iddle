@@ -1,0 +1,35 @@
+/* ==========================================================================
+   Component: Board header (title + mobile-only collapse toggles)
+   HTML: .board-header inside section.panel (view-board)
+   ========================================================================== */
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.mobile-collapse-toggle {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .board-header {
+    margin-bottom: 2px;
+  }
+
+  .mobile-collapse-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 540px) {
+  .board-header .btn {
+    width: 100%;
+  }
+}

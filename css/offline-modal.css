@@ -1,0 +1,28 @@
+/* ==========================================================================
+   Component: Offline progress modal (welcome-back summary)
+   HTML: .offline-modal#offlineModal > .offline-card (#offlineText, #offlineClose)
+   ========================================================================== */
+
+.offline-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .42);
+  z-index: 55;
+  place-items: center;
+  padding: 20px;
+}
+
+.offline-modal.open {
+  display: grid;
+}
+
+.offline-card {
+  width: min(460px, 92vw);
+  background: var(--surface);
+  border-radius: 28px;
+  padding: 22px;
+  display: grid;
+  gap: 12px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, .24);
+}

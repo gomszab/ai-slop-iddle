@@ -1,0 +1,126 @@
+/* ==========================================================================
+   Base: design tokens, resets, generic typography
+   ========================================================================== */
+
+:root,
+[data-theme="light"] {
+  --bg: #f5f3ea;
+  --surface: #fffdf8;
+  --surface-2: #f6f2e8;
+  --surface-3: #ece5d6;
+  --text: #2d382d;
+  --muted: #667563;
+  --faint: #9aa691;
+  --primary: #2e8f67;
+  --primary-2: #55a985;
+  --accent: #5ba7c7;
+  --gold: #cf9c29;
+  --danger: #c75d52;
+  --rare: #8a63d2;
+  --shadow: 0 10px 30px rgba(54, 64, 44, .12);
+  --radius: 18px;
+  --radius-sm: 12px;
+  --pill: 999px;
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --font-display: 'Baloo 2', system-ui, sans-serif;
+  --font-body: 'Nunito', system-ui, sans-serif;
+}
+
+[data-theme="dark"] {
+  --bg: #15211b;
+  --surface: #1b2a23;
+  --surface-2: #22352c;
+  --surface-3: #2a4135;
+  --text: #e8f2ea;
+  --muted: #9bb09f;
+  --faint: #6f8878;
+  --primary: #52bf91;
+  --primary-2: #78d1a9;
+  --accent: #70bedc;
+  --gold: #e4bd59;
+  --danger: #e07f76;
+  --rare: #b193ef;
+  --shadow: 0 14px 36px rgba(0, 0, 0, .35);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: radial-gradient(circle at top left, rgba(91, 167, 199, .12), transparent 28%), radial-gradient(circle at bottom right, rgba(46, 143, 103, .12), transparent 30%), var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+/* Generic utility classes reused across components */
+.muted {
+  color: var(--muted);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.hint {
+  background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  padding: 12px 14px;
+  border-radius: 16px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.token {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  font-weight: 800;
+  font-size: .8rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
